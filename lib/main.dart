@@ -1,3 +1,5 @@
+import 'package:challan_app/core/theme/app_theme.dart';
+import 'package:challan_app/features/auth/presentation/screens/wrapper.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -14,6 +16,10 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp();
+    return MaterialApp(
+      theme: AppTheme.theme,
+      debugShowCheckedModeBanner: false,
+      home: Wrapper(),
+    );
   }
 }
