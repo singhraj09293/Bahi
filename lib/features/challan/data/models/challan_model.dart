@@ -1,26 +1,30 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
-class ChallanModel {
-  final String challanNo;
-  final DateTime date;
-  final String workersNames;
-  final int totalPiece;
-  final String classification;
-  final String isReady;
-  final bool isDelivered;
-  final DateTime? deliveryDate;
+import 'package:challan_app/features/challan/domain/entities/challan_entity.dart';
 
+class ChallanModel extends Challan {
   ChallanModel({
-    required this.challanNo,
-    required this.date,
-    required this.workersNames,
-    required this.totalPiece,
-    required this.classification,
-    required this.isReady,
-    required this.isDelivered,
-    this.deliveryDate,
-  });
+    required String challanNo,
+    required DateTime date,
+    required String workersNames,
+    required int totalPiece,
+    required String classification,
+    required String isReady,
+    required bool isDelivered,
+    DateTime? deliveryDate,
+    required String id,
+  }) : super(
+         challanNo: challanNo,
+         date: date,
+         workersNames: workersNames,
+         totalPiece: totalPiece,
+         classification: classification,
+         isReady: isReady,
+         isDelivered: isDelivered,
+         deliveryDate: deliveryDate,
+         id: id,
+       );
 
   ChallanModel copyWith({
     String? challanNo,
@@ -31,6 +35,7 @@ class ChallanModel {
     String? isReady,
     bool? isDelivered,
     DateTime? deliveryDate,
+    String? id,
   }) {
     return ChallanModel(
       challanNo: challanNo ?? this.challanNo,
@@ -41,6 +46,7 @@ class ChallanModel {
       isReady: isReady ?? this.isReady,
       isDelivered: isDelivered ?? this.isDelivered,
       deliveryDate: deliveryDate ?? this.deliveryDate,
+      id: id ?? this.id,
     );
   }
 
@@ -66,9 +72,10 @@ class ChallanModel {
       classification: map['classification'] as String,
       isReady: map['isReady'] as String,
       isDelivered: map['isDelivered'] as bool,
-      deliveryDate: map['deliveryData'] != null
+      deliveryDate: map['deliveryDate'] != null
           ? DateTime.fromMillisecondsSinceEpoch(map['deliveryDate'] as int)
           : null,
+      id: map['id'] as String,
     );
   }
 
