@@ -1,9 +1,6 @@
 import 'package:challan_app/core/theme/app_theme.dart';
-import 'package:challan_app/features/auth/presentation/screens/registration.dart';
-import 'package:challan_app/features/challan/presntation/screens/main_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -30,25 +27,15 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  Future<void> signInWithGoogle() async {
-    final googleUser = await GoogleSignIn().signIn();
-    if (googleUser == null) return;
-    final googleAuth = await googleUser.authentication;
-    final credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken,
-    );
-    await FirebaseAuth.instance.signInWithCredential(credential);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 10),
+          padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 'Welcome Back!',
@@ -59,7 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 'Let’s login for explore continues',
                 style: TextStyle(color: AppColors.grey),
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 30),
               Container(
                 padding: EdgeInsets.all(20),
                 decoration: BoxDecoration(
@@ -82,7 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 30),
               Padding(
                 padding: const EdgeInsets.all(5.0),
                 child: Column(
@@ -98,6 +85,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: TextField(
+                        controller: email,
                         decoration: InputDecoration(
                           hintText: 'Email',
                           hintStyle: TextStyle(color: AppColors.grey),
@@ -125,6 +113,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: TextField(
+                        controller: password,
                         obscureText: _obscure,
                         decoration: InputDecoration(
                           hintText: 'Password',
@@ -155,13 +144,21 @@ class _LoginScreenState extends State<LoginScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Text(
-                          'Forget Password?',
-                          style: TextStyle(color: AppColors.primary),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (_) => ForgetPass()),
+                            );
+                          },
+                          child: Text(
+                            'Forget Password?',
+                            style: TextStyle(color: AppColors.primary),
+                          ),
                         ),
                       ],
                     ),
-                    SizedBox(height: 40),
+                    SizedBox(height: 100),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         fixedSize: Size(360, 60),
@@ -175,69 +172,85 @@ class _LoginScreenState extends State<LoginScreen> {
                         style: TextStyle(color: Colors.white, fontSize: 23),
                       ),
                     ),
-                    SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          child: Divider(thickness: 1.5, color: Colors.grey),
-                        ),
-                        SizedBox(width: 7),
-                        Text(
-                          'or continue with',
-                          style: TextStyle(color: AppColors.grey),
-                        ),
-                        SizedBox(width: 7),
-                        Expanded(
-                          child: Divider(thickness: 1.5, color: Colors.grey),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 20),
-                    OutlinedButton(
-                      onPressed: () {
-                        signInWithGoogle();
-                      },
-                      style: OutlinedButton.styleFrom(
-                        fixedSize: Size(100, 55),
-                        side: BorderSide(color: AppColors.grey),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      child: Text(
-                        'G',
-                        style: TextStyle(
-                          fontSize: 35,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.red,
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Don't have an account?",
-                          style: TextStyle(color: AppColors.grey),
-                        ),
-                        SizedBox(width: 7),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (_) => Registration()),
-                            );
-                          },
-                          child: Text(
-                            'Create Account',
-                            style: TextStyle(color: AppColors.primary),
-                          ),
-                        ),
-                      ],
-                    ),
                   ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class ForgetPass extends StatelessWidget {
+  const ForgetPass({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    TextEditingController email = TextEditingController();
+    Future<void> forgetPassword() async {
+      await FirebaseAuth.instance.sendPasswordResetEmail(
+        email: email.text.trim(),
+      );
+    }
+
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 30.0, horizontal: 15),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset('assets/images/forget.png', height: 300),
+              SizedBox(height: 20),
+              Text(
+                'Reset Your Password',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
+              ),
+              SizedBox(height: 10),
+              Text(
+                textAlign: TextAlign.center,
+                "Enter your email adress below and we’ll send you a link with instructions",
+                style: TextStyle(color: AppColors.grey),
+              ),
+              SizedBox(height: 20),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [Text('Email', style: TextStyle(fontSize: 20))],
+              ),
+              SizedBox(height: 10),
+              Container(
+                decoration: BoxDecoration(
+                  color: Color(0xffF5E6C8),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: TextField(
+                  controller: email,
+                  decoration: InputDecoration(
+                    hintText: 'Email',
+                    hintStyle: TextStyle(color: AppColors.grey),
+                    contentPadding: EdgeInsets.all(25),
+                    border: InputBorder.none,
+                    prefixIcon: Icon(Icons.email, color: AppColors.primary),
+                  ),
+                ),
+              ),
+              SizedBox(height: 200),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  fixedSize: Size(360, 60),
+                  backgroundColor: AppColors.primary,
+                ),
+                onPressed: () async {
+                  await forgetPassword();
+                  Future.delayed(Duration(seconds: 3), () {
+                    Navigator.pop(context);
+                  });
+                },
+                child: Text(
+                  'Send Verification code',
+                  style: TextStyle(color: Colors.white, fontSize: 20),
                 ),
               ),
             ],
