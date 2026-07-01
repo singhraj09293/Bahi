@@ -15,8 +15,8 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int currentIndex = 0;
   List screen = [
-    ChallanListScreen(),
     DashboardScreen(),
+    ChallanListScreen(),
     HistoryScreen(),
     WokerScreen(),
   ];
