@@ -1,17 +1,32 @@
 import 'package:challan_app/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
-class NewChallanScreen extends StatefulWidget {
+class NewChallanScreen extends ConsumerStatefulWidget {
   const NewChallanScreen({super.key});
 
   @override
-  State<NewChallanScreen> createState() => _NewChallanScreenState();
+  ConsumerState<NewChallanScreen> createState() => _NewChallanScreenState();
 }
 
-class _NewChallanScreenState extends State<NewChallanScreen> {
+class _NewChallanScreenState extends ConsumerState<NewChallanScreen> {
   String selectedWorkType = 'Embroidery';
   final List<String> workTypes = ['Embroidery', 'Handwork', 'Mirrors'];
+  final challannoProvider = TextEditingController();
+  final workerNameController = TextEditingController();
+  final totalPieceController = TextEditingController();
+  final classificationController = TextEditingController();
+
+  @override
+  void dispose() {
+    super.dispose();
+    challannoProvider.dispose();
+    workerNameController.dispose();
+    totalPieceController.dispose();
+    classificationController.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,6 +55,19 @@ class _NewChallanScreenState extends State<NewChallanScreen> {
           },
           icon: Icon(Icons.arrow_back),
         ),
+        actions: [
+          TextButton(
+            onPressed: () {},
+            child: Text(
+              'Save',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -66,6 +94,7 @@ class _NewChallanScreenState extends State<NewChallanScreen> {
                         SizedBox(width: 5),
                         Expanded(
                           child: TextField(
+                            controller: challannoProvider,
                             decoration: InputDecoration(
                               hintText: 'e.g. 1234',
                               hintStyle: TextStyle(
@@ -102,6 +131,7 @@ class _NewChallanScreenState extends State<NewChallanScreen> {
                         SizedBox(width: 5),
                         Expanded(
                           child: TextField(
+                            controller: workerNameController,
                             decoration: InputDecoration(
                               hintText: 'e.g. Raj Embroidery',
                               hintStyle: TextStyle(
@@ -241,10 +271,14 @@ class _NewChallanScreenState extends State<NewChallanScreen> {
                             SizedBox(width: 10),
                             Expanded(
                               child: TextField(
+                                controller: totalPieceController,
+                                keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
                                   hintText: '0',
+
                                   hintStyle: TextStyle(
                                     color: Colors.grey,
+
                                     fontSize: 18,
                                   ),
                                   border: InputBorder.none,
@@ -318,6 +352,7 @@ class _NewChallanScreenState extends State<NewChallanScreen> {
                         SizedBox(width: 10),
                         Expanded(
                           child: TextField(
+                            controller: classificationController,
                             decoration: InputDecoration(
                               hintText: 'e.g. 50pcs X 8Colors',
                               hintStyle: TextStyle(
@@ -363,24 +398,6 @@ class _NewChallanScreenState extends State<NewChallanScreen> {
                         Text('Auto', style: TextStyle(color: Colors.grey)),
                       ],
                     ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  fixedSize: Size(360, 55),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadiusGeometry.circular(20),
-                  ),
-                ),
-                onPressed: () {},
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.save),
-                    SizedBox(width: 10),
-                    Text('Save Challan',style: TextStyle(fontSize: 18),),
                   ],
                 ),
               ),
