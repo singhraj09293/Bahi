@@ -65,17 +65,17 @@ class ChallanModel extends Challan {
 
   factory ChallanModel.fromMap(Map<String, dynamic> map) {
     return ChallanModel(
-      challanNo: map['challanNo'] as String,
+      id: '',
+      challanNo: map['challanNo'] as String? ?? '',
       date: DateTime.fromMillisecondsSinceEpoch(map['date'] as int),
-      workersNames: map['workersNames'] as String,
-      totalPiece: map['totalPiece'] as int,
-      classification: map['classification'] as String,
-      isReady: map['isReady'] as String,
-      isDelivered: map['isDelivered'] as bool,
+      workersNames: map['workersNames'] as String? ?? '',
+      totalPiece: map['totalPiece'] as int? ?? 0,
+      classification: map['classification'] as String? ?? '',
+      isReady: map['isReady'] as String? ?? 'Pending',
+      isDelivered: map['isDelivered'] as bool? ?? false,
       deliveryDate: map['deliveryDate'] != null
           ? DateTime.fromMillisecondsSinceEpoch(map['deliveryDate'] as int)
           : null,
-      id: map['id'] as String,
     );
   }
 

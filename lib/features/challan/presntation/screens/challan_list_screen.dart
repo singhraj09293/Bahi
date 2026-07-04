@@ -217,6 +217,7 @@ class _ChallanListScreenState extends ConsumerState<ChallanListScreen> {
                           border: Border.all(color: Colors.black, width: 1),
                         ),
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -228,6 +229,7 @@ class _ChallanListScreenState extends ConsumerState<ChallanListScreen> {
                                     fontSize: 23,
                                   ),
                                 ),
+                                SizedBox(height: 10,),
                                 Container(
                                   padding: EdgeInsets.symmetric(
                                     vertical: 10,
@@ -262,9 +264,9 @@ class _ChallanListScreenState extends ConsumerState<ChallanListScreen> {
                                 fontSize: 15,
                               ),
                             ),
-                            SizedBox(height: 20),
+                            
                             Divider(color: AppColors.primary),
-                            SizedBox(height: 20),
+                            SizedBox(height: 10),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [

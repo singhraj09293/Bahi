@@ -244,37 +244,45 @@ class DashboardScreen extends ConsumerWidget {
                     itemCount: recent.length,
                     physics: NeverScrollableScrollPhysics(),
                     itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Text('Challan ${recent[index].challanNo}'),
-                        subtitle: Text(
-                          '${recent[index].classification} - ${recent[index].totalPiece}',
+                      return Container(
+                        margin: EdgeInsets.only(bottom: 10),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: Colors.white,
+                          border: Border.all(color: Colors.black,width: 1)
                         ),
-                        trailing: Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 4,
+                        child: ListTile(
+                          title: Text('Challan ${recent[index].challanNo}'),
+                          subtitle: Text(
+                            '${recent[index].classification} - ${recent[index].totalPiece}',
                           ),
-                          decoration: BoxDecoration(
-                            color: recent[index].isDelivered
-                                ? Colors.blue.shade50
-                                : recent[index].isReady == 'Pending'
-                                ? Colors.orange.shade50
-                                : Colors.green.shade50,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Text(
-                            recent[index].isDelivered
-                                ? 'Delivered'
-                                : recent[index].isReady == 'Pending'
-                                ? 'Pending'
-                                : 'Ready',
-                            style: TextStyle(
-                              fontSize: 11,
+                          trailing: Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
                               color: recent[index].isDelivered
-                                  ? Colors.blue.shade700
+                                  ? Colors.blue.shade50
                                   : recent[index].isReady == 'Pending'
-                                  ? Colors.orange.shade700
-                                  : Colors.green.shade700,
+                                  ? Colors.orange.shade50
+                                  : Colors.green.shade50,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Text(
+                              recent[index].isDelivered
+                                  ? 'Delivered'
+                                  : recent[index].isReady == 'Pending'
+                                  ? 'Pending'
+                                  : 'Ready',
+                              style: TextStyle(
+                                fontSize: 11,
+                                color: recent[index].isDelivered
+                                    ? Colors.blue.shade700
+                                    : recent[index].isReady == 'Pending'
+                                    ? Colors.orange.shade700
+                                    : Colors.green.shade700,
+                              ),
                             ),
                           ),
                         ),

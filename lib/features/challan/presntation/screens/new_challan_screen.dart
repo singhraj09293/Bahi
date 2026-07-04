@@ -1,4 +1,6 @@
 import 'package:challan_app/core/theme/app_theme.dart';
+import 'package:challan_app/features/challan/data/models/challan_model.dart';
+import 'package:challan_app/features/challan/presntation/provider/challan_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -13,10 +15,11 @@ class NewChallanScreen extends ConsumerStatefulWidget {
 class _NewChallanScreenState extends ConsumerState<NewChallanScreen> {
   String selectedWorkType = 'Embroidery';
   final List<String> workTypes = ['Embroidery', 'Handwork', 'Mirrors'];
-  final challannoProvider = TextEditingController();
-  final workerNameController = TextEditingController();
-  final totalPieceController = TextEditingController();
-  final classificationController = TextEditingController();
+  bool isReady = false;
+  TextEditingController challannoProvider = TextEditingController();
+  TextEditingController workerNameController = TextEditingController();
+  TextEditingController totalPieceController = TextEditingController();
+  TextEditingController classificationController = TextEditingController();
 
   @override
   void dispose() {
@@ -57,7 +60,28 @@ class _NewChallanScreenState extends ConsumerState<NewChallanScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: () {},
+            onPressed: () {
+              if (challannoProvider.text.isEmpty ||
+                  workerNameController.text.isEmpty ||
+                  totalPieceController.text.isEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Please fill all fields')),
+                );
+                return;
+              }
+              final challan = ChallanModel(
+                challanNo: challannoProvider.text.trim(),
+                date: DateTime.now(),
+                workersNames: workerNameController.text.trim(),
+                totalPiece: int.parse(totalPieceController.text.trim()),
+                classification: classificationController.text.trim(),
+                isReady: isReady ? 'Ready' : 'Pending',
+                isDelivered: false,
+                id: '',
+              );
+              ref.read(challanRepositiaryProvider).addChallan(challan);
+              Navigator.pop(context);
+            },
             child: Text(
               'Save',
               style: TextStyle(
@@ -292,7 +316,7 @@ class _NewChallanScreenState extends ConsumerState<NewChallanScreen> {
                   ),
                   Container(
                     width: (MediaQuery.of(context).size.width - 60) / 2,
-                    padding: EdgeInsets.all(15),
+                    padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(30),
@@ -307,19 +331,20 @@ class _NewChallanScreenState extends ConsumerState<NewChallanScreen> {
                         ),
                         Row(
                           children: [
-                            Icon(Icons.timer, color: AppColors.primary),
-                            SizedBox(width: 10),
-                            Expanded(
-                              child: TextField(
-                                decoration: InputDecoration(
-                                  hintText: 'pending',
-                                  hintStyle: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 18,
-                                  ),
-                                  border: InputBorder.none,
-                                ),
+                            SizedBox(width: 5),
+                            Text(
+                              isReady ? 'Ready' : 'Pending',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 17,
                               ),
+                            ),
+                            SizedBox(width: 5),
+                            Switch(
+                              value: isReady,
+                              activeThumbColor: AppColors.primary,
+                              onChanged: (value) =>
+                                  setState(() => isReady = value),
                             ),
                           ],
                         ),
