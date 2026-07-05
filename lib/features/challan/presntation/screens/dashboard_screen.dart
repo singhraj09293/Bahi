@@ -1,5 +1,6 @@
 import 'package:challan_app/core/theme/app_theme.dart';
 import 'package:challan_app/features/challan/presntation/provider/challan_provider.dart';
+import 'package:challan_app/features/challan/presntation/screens/new_challan_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -249,7 +250,7 @@ class DashboardScreen extends ConsumerWidget {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
                           color: Colors.white,
-                          border: Border.all(color: Colors.black,width: 1)
+                          border: Border.all(color: Colors.black, width: 1),
                         ),
                         child: ListTile(
                           title: Text('Challan ${recent[index].challanNo}'),
@@ -297,7 +298,12 @@ class DashboardScreen extends ConsumerWidget {
                         borderRadius: BorderRadiusGeometry.circular(20),
                       ),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => NewChallanScreen()),
+                      );
+                    },
                     child: Text(
                       '+ New challan',
                       style: TextStyle(fontSize: 20),

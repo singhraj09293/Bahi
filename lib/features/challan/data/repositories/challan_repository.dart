@@ -6,7 +6,10 @@ class ChallanRepository {
   final _collection = 'challan';
 
   Future<void> addChallan(ChallanModel challan) async {
-    await _fireStore.collection(_collection).add(challan.toMap());
+    await _fireStore
+        .collection(_collection)
+        .doc(challan.challanNo)
+        .set(challan.toMap());
   }
 
   Stream<List<ChallanModel>> getChallan() {

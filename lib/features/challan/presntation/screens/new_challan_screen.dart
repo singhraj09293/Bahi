@@ -65,14 +65,14 @@ class _NewChallanScreenState extends ConsumerState<NewChallanScreen> {
                   workerNameController.text.isEmpty ||
                   totalPieceController.text.isEmpty) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Please fill all fields')),
+                  SnackBar(content: Text('Please fill all fields',style: TextStyle(fontWeight: FontWeight.bold),),backgroundColor: AppColors.primary,),
                 );
                 return;
               }
               final challan = ChallanModel(
                 challanNo: challannoProvider.text.trim(),
                 date: DateTime.now(),
-                workersNames: workerNameController.text.trim(),
+                workersNames: '${workerNameController.text.trim()} $selectedWorkType',
                 totalPiece: int.parse(totalPieceController.text.trim()),
                 classification: classificationController.text.trim(),
                 isReady: isReady ? 'Ready' : 'Pending',
