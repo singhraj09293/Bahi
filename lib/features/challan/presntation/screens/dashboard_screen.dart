@@ -14,7 +14,7 @@ class DashboardScreen extends ConsumerWidget {
     return challan.when(
       data: (challans) {
         int total = challans.length;
-        int pending = challans.where((c) => c.isReady == 'pending').length;
+        int pending = challans.where((c) => c.isReady == 'Pending').length;
         int completed = challans.where((c) => c.isDelivered == true).length;
         int totalPiece = challans.fold(0, (sum, c) => sum + c.totalPiece);
         final recent = challans.take(3).toList();
