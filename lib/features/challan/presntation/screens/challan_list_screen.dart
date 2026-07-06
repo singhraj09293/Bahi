@@ -17,6 +17,9 @@ class ChallanListScreen extends ConsumerStatefulWidget {
 class _ChallanListScreenState extends ConsumerState<ChallanListScreen> {
   String selectedFilter = 'All';
   final List<String> filters = ['All', 'Pending', 'Ready', 'Delivered'];
+  TextEditingController search = TextEditingController();
+  String searchQuery = '';
+  bool newestFirst = true;
   Color getBadgeColor(ChallanModel challan) {
     if (challan.isDelivered) return Colors.blue.shade50;
     if (challan.isReady == 'Ready') return Colors.green.shade50;
@@ -46,12 +49,29 @@ class _ChallanListScreenState extends ConsumerState<ChallanListScreen> {
         int ready = challans.where((c) => c.isReady == 'ready').length;
         int completed = challans.where((c) => c.isDelivered == true).length;
         int active = challans.where((c) => c.isDelivered == false).length;
+
         // After filter chips add filtered list
         final filtered = selectedFilter == 'All'
             ? challans
             : selectedFilter == 'Delivered'
             ? challans.where((c) => c.isDelivered).toList()
             : challans.where((c) => c.isReady == selectedFilter).toList();
+        final sorted = [...filtered]
+          ..sort(
+            (a, b) => newestFirst
+                ? b.date.compareTo(a.date)
+                : a.date.compareTo(b.date),
+          );
+        final searched = searchQuery.isEmpty
+            ? sorted
+            : sorted
+                  .where(
+                    (c) =>
+                        c.challanNo.toLowerCase().contains(searchQuery) ||
+                        c.workersNames.toLowerCase().contains(searchQuery),
+                  )
+                  .toList();
+
         return Scaffold(
           appBar: AppBar(
             toolbarHeight: 65,
@@ -69,7 +89,48 @@ class _ChallanListScreenState extends ConsumerState<ChallanListScreen> {
                 ),
               ],
             ),
-            actions: [IconButton(onPressed: () {}, icon: Icon(Icons.tune))],
+            actions: [
+              IconButton(
+                onPressed: () {
+                  showModalBottomSheet(
+                    context: context,
+                    builder: (_) => Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ListTile(
+                          title: Text('Newest first'),
+                          leading: Icon(Icons.arrow_downward),
+                          trailing: newestFirst
+                              ? Icon(Icons.check, color: AppColors.primary)
+                              : null,
+                          onTap: () {
+                            print('newestFirst: $newestFirst');
+                            setState(() {
+                              newestFirst = true;
+                            });
+                            Navigator.pop(context);
+                          },
+                        ),
+                        ListTile(
+                          title: Text('Oldest first'),
+                          leading: Icon(Icons.arrow_upward),
+                          trailing: !newestFirst
+                              ? Icon(Icons.check, color: AppColors.primary)
+                              : null,
+                          onTap: () {
+                            setState(() {
+                              newestFirst = false;
+                            });
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ],
+                    ),
+                  );
+                },
+                icon: Icon(Icons.tune),
+              ),
+            ],
           ),
           body: Padding(
             padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
@@ -85,6 +146,12 @@ class _ChallanListScreenState extends ConsumerState<ChallanListScreen> {
                     border: Border.all(color: Colors.black, width: 0.5),
                   ),
                   child: TextField(
+                    controller: search,
+                    onChanged: (value) {
+                      setState(() {
+                        searchQuery = value.toLowerCase();
+                      });
+                    },
                     decoration: InputDecoration(
                       prefixIcon: Icon(Icons.search, color: Colors.grey),
                       hintText: 'Search by worker,challan no..',
@@ -205,104 +272,109 @@ class _ChallanListScreenState extends ConsumerState<ChallanListScreen> {
                 ),
                 SizedBox(height: 20),
                 Expanded(
-                  child: ListView.builder(
-                    itemCount: filtered.length,
-                    itemBuilder: ((context, index) {
-                      final c = filtered[index];
-                      return GestureDetector(
-                        onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => DetailChallan(challan: c),
+                  child: RefreshIndicator(
+                    onRefresh: () async {
+                      ref.invalidate(challanProvider);
+                    },
+                    child: ListView.builder(
+                      itemCount: searched.length,
+                      itemBuilder: ((context, index) {
+                        final c = searched[index];
+                        return GestureDetector(
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => DetailChallan(challan: c),
+                            ),
                           ),
-                        ),
-                        child: Container(
-                          margin: EdgeInsets.only(bottom: 10),
-                          padding: EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(30),
-                            border: Border.all(color: Colors.black, width: 1),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    c.challanNo,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 23,
-                                    ),
-                                  ),
-                                  SizedBox(height: 10),
-                                  Container(
-                                    padding: EdgeInsets.symmetric(
-                                      vertical: 10,
-                                      horizontal: 15,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: getBadgeColor(c),
-                                      borderRadius: BorderRadius.circular(30),
-                                    ),
-                                    child: Text(
-                                      getBadgeText(c),
+                          child: Container(
+                            margin: EdgeInsets.only(bottom: 10),
+                            padding: EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(30),
+                              border: Border.all(color: Colors.black, width: 1),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      c.challanNo,
                                       style: TextStyle(
-                                        color: getBadgeTextColor(c),
-                                        fontSize: 11,
-                                        fontWeight: FontWeight.w500,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 23,
                                       ),
                                     ),
+                                    SizedBox(height: 10),
+                                    Container(
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: 10,
+                                        horizontal: 15,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: getBadgeColor(c),
+                                        borderRadius: BorderRadius.circular(30),
+                                      ),
+                                      child: Text(
+                                        getBadgeText(c),
+                                        style: TextStyle(
+                                          color: getBadgeTextColor(c),
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Text(
+                                  '${c.workersNames} ·${c.totalPiece}pcs',
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 15,
                                   ),
-                                ],
-                              ),
-                              Text(
-                                '${c.workersNames} ·${c.totalPiece}pcs',
-                                style: TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 15,
                                 ),
-                              ),
-                              Text(
-                                c.classification,
-                                style: TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 15,
+                                Text(
+                                  c.classification,
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 15,
+                                  ),
                                 ),
-                              ),
 
-                              Divider(color: AppColors.primary),
-                              SizedBox(height: 10),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    'Given ${DateFormat('dd MMM yyyy').format(c.date)}',
-                                    style: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: 15,
+                                Divider(color: AppColors.primary),
+                                SizedBox(height: 10),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      'Given ${DateFormat('dd MMM yyyy').format(c.date)}',
+                                      style: TextStyle(
+                                        color: Colors.grey,
+                                        fontSize: 15,
+                                      ),
                                     ),
-                                  ),
-                                  Text(
-                                    c.isDelivered
-                                        ? 'Delivered: ${DateFormat('dd MMM yyyy').format(c.deliveryDate!)}'
-                                        : 'No delivery yet',
-                                    style: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: 15,
+                                    Text(
+                                      c.isDelivered
+                                          ? 'Delivered: ${DateFormat('dd MMM yyyy').format(c.deliveryDate!)}'
+                                          : 'No delivery yet',
+                                      style: TextStyle(
+                                        color: Colors.grey,
+                                        fontSize: 15,
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                            ],
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      );
-                    }),
+                        );
+                      }),
+                    ),
                   ),
                 ),
               ],
