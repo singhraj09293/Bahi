@@ -1,6 +1,7 @@
 import 'package:challan_app/core/theme/app_theme.dart';
 import 'package:challan_app/features/challan/data/models/challan_model.dart';
 import 'package:challan_app/features/challan/presntation/provider/challan_provider.dart';
+import 'package:challan_app/features/workers/presentation/provider/worker_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -15,6 +16,8 @@ class NewChallanScreen extends ConsumerStatefulWidget {
 class _NewChallanScreenState extends ConsumerState<NewChallanScreen> {
   String selectedWorkType = 'Embroidery';
   final List<String> workTypes = ['Embroidery', 'Handwork', 'Mirrors'];
+  String? selectedWorkerId;
+  String? selectedWorkerName;
   bool isReady = false;
   TextEditingController challannoProvider = TextEditingController();
   TextEditingController workerNameController = TextEditingController();
@@ -32,6 +35,7 @@ class _NewChallanScreenState extends ConsumerState<NewChallanScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final workerAsync = ref.watch(workerProvider);
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 65,
@@ -62,22 +66,28 @@ class _NewChallanScreenState extends ConsumerState<NewChallanScreen> {
           TextButton(
             onPressed: () {
               if (challannoProvider.text.isEmpty ||
-                  workerNameController.text.isEmpty ||
+                  selectedWorkerName!.isEmpty ||
                   totalPieceController.text.isEmpty) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Please fill all fields',style: TextStyle(fontWeight: FontWeight.bold),),backgroundColor: AppColors.primary,),
+                  SnackBar(
+                    content: Text(
+                      'Please fill all fields',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    backgroundColor: AppColors.primary,
+                  ),
                 );
                 return;
               }
               final challan = ChallanModel(
                 challanNo: challannoProvider.text.trim(),
                 date: DateTime.now(),
-                workersNames: '${workerNameController.text.trim()} $selectedWorkType',
+                workersNames: '$selectedWorkerName $selectedWorkType',
                 totalPiece: int.parse(totalPieceController.text.trim()),
                 classification: classificationController.text.trim(),
                 isReady: isReady ? 'Ready' : 'Pending',
                 isDelivered: false,
-                id: '',
+                workerid: selectedWorkerId ?? '',
               );
               ref.read(challanRepositiaryProvider).addChallan(challan);
               Navigator.pop(context);
@@ -136,140 +146,40 @@ class _NewChallanScreenState extends ConsumerState<NewChallanScreen> {
               ),
               SizedBox(height: 10),
               Container(
-                padding: EdgeInsets.all(15),
+                padding: EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(30),
                   border: Border.all(color: Colors.black, width: 0.5),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Worker Name',
-                      style: TextStyle(color: AppColors.primary, fontSize: 18),
-                    ),
-                    Row(
-                      children: [
-                        Icon(Icons.person, color: AppColors.primary),
-                        SizedBox(width: 5),
-                        Expanded(
-                          child: TextField(
-                            controller: workerNameController,
-                            decoration: InputDecoration(
-                              hintText: 'e.g. Raj Embroidery',
-                              hintStyle: TextStyle(
-                                fontSize: 20,
-                                color: Colors.grey,
-                              ),
-                              border: InputBorder.none,
-                            ),
+                child: workerAsync.when(
+                  data: (worker) => DropdownButtonFormField<String>(
+                    initialValue: selectedWorkerId,
+                    hint: Text('Select Worker'),
+                    decoration: InputDecoration(border: InputBorder.none),
+                    items: worker
+                        .map(
+                          (w) => DropdownMenuItem(
+                            value: w.workerId,
+                            child: Text('${w.workerName}'),
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
+                        )
+                        .toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedWorkerId = value;
+                        selectedWorkerName = worker
+                            .firstWhere((w) => w.workerId == value)
+                            .workerName;
+                      });
+                    },
+                  ),
+                  error: (e, st) => Text('Error $e'),
+                  loading: () => Center(child: CircularProgressIndicator()),
                 ),
               ),
               SizedBox(height: 20),
-              Container(
-                padding: EdgeInsets.all(15),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(30),
-                  border: Border.all(color: Colors.black, width: 0.5),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Work Type', style: TextStyle(color: Colors.grey)),
-                    SizedBox(height: 10),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              selectedWorkType = workTypes[0];
-                            });
-                          },
-                          child: Container(
-                            padding: EdgeInsets.all(15),
-                            decoration: BoxDecoration(
-                              color: selectedWorkType == 'Embroidery'
-                                  ? AppColors.primary
-                                  : AppColors.background,
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                            child: Text(
-                              'Embroidery',
-                              style: TextStyle(
-                                fontSize: 15,
-                                color: selectedWorkType == 'Embroidery'
-                                    ? Colors.white
-                                    : Colors.black,
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: 20),
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              selectedWorkType = workTypes[1];
-                            });
-                          },
-                          child: Container(
-                            padding: EdgeInsets.all(15),
-                            decoration: BoxDecoration(
-                              color: selectedWorkType == 'Handwork'
-                                  ? AppColors.primary
-                                  : AppColors.background,
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                            child: Text(
-                              'Handwork',
-                              style: TextStyle(
-                                fontSize: 15,
-                                color: selectedWorkType == 'Handwork'
-                                    ? Colors.white
-                                    : Colors.black,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 10),
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          selectedWorkType = workTypes[2];
-                        });
-                      },
-                      child: Container(
-                        padding: EdgeInsets.all(15),
-                        decoration: BoxDecoration(
-                          color: selectedWorkType == 'Mirrors'
-                              ? AppColors.primary
-                              : AppColors.background,
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        child: Text(
-                          'Mirrors',
-                          style: TextStyle(
-                            fontSize: 15,
-                            color: selectedWorkType == 'Mirrors'
-                                ? Colors.white
-                                : Colors.black,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 20),
+
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
 

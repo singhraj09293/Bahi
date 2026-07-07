@@ -1,5 +1,5 @@
 class Challan {
-  final String id;
+  final String workerid;
   final String challanNo;
   final DateTime date;
   final String workersNames;
@@ -10,7 +10,6 @@ class Challan {
   final DateTime? deliveryDate;
 
   const Challan({
-    required this.id,
     required this.challanNo,
     required this.date,
     required this.workersNames,
@@ -19,5 +18,6 @@ class Challan {
     required this.isReady,
     required this.isDelivered,
     this.deliveryDate,
+    required this.workerid,
   });
 }

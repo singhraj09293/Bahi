@@ -13,7 +13,7 @@ class ChallanModel extends Challan {
     required String isReady,
     required bool isDelivered,
     DateTime? deliveryDate,
-    required String id,
+    required String workerid,
   }) : super(
          challanNo: challanNo,
          date: date,
@@ -23,7 +23,7 @@ class ChallanModel extends Challan {
          isReady: isReady,
          isDelivered: isDelivered,
          deliveryDate: deliveryDate,
-         id: id,
+         workerid: workerid,
        );
 
   ChallanModel copyWith({
@@ -35,7 +35,7 @@ class ChallanModel extends Challan {
     String? isReady,
     bool? isDelivered,
     DateTime? deliveryDate,
-    String? id,
+    String? workerid,
   }) {
     return ChallanModel(
       challanNo: challanNo ?? this.challanNo,
@@ -46,7 +46,7 @@ class ChallanModel extends Challan {
       isReady: isReady ?? this.isReady,
       isDelivered: isDelivered ?? this.isDelivered,
       deliveryDate: deliveryDate ?? this.deliveryDate,
-      id: id ?? this.id,
+      workerid: workerid ?? this.workerid,
     );
   }
 
@@ -60,12 +60,13 @@ class ChallanModel extends Challan {
       'isReady': isReady,
       'isDelivered': isDelivered,
       'deliveryDate': deliveryDate?.millisecondsSinceEpoch,
+      'workerid': workerid,
     };
   }
 
   factory ChallanModel.fromMap(Map<String, dynamic> map) {
     return ChallanModel(
-      id: '',
+      workerid: map['workerid'] as String? ?? '',
       challanNo: map['challanNo'] as String? ?? '',
       date: DateTime.fromMillisecondsSinceEpoch(map['date'] as int),
       workersNames: map['workersNames'] as String? ?? '',

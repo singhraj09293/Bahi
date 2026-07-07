@@ -292,9 +292,7 @@ class _DetailChallanState extends ConsumerState<DetailChallan> {
                   ),
                   onPressed: () async {
                     final updated = widget.challan.copyWith(isReady: 'Ready');
-                    print(
-                      'Updated isReady: ${updated.isReady}',
-                    ); // ← add this
+                    
                     await ref
                         .read(challanRepositiaryProvider)
                         .updateChallan(updated);
