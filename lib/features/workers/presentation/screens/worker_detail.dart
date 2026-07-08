@@ -1,9 +1,11 @@
 import 'package:challan_app/core/theme/app_theme.dart';
+import 'package:challan_app/features/challan/data/models/challan_model.dart';
 import 'package:challan_app/features/challan/presntation/provider/challan_provider.dart';
 import 'package:challan_app/features/workers/data/model/worker_model.dart';
 import 'package:challan_app/features/workers/presentation/provider/worker_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 class WorkerDetail extends ConsumerStatefulWidget {
   final WorkerModel worker;
@@ -14,6 +16,24 @@ class WorkerDetail extends ConsumerStatefulWidget {
 }
 
 class _WorkerDetailState extends ConsumerState<WorkerDetail> {
+  Color getBadgeColor(ChallanModel challan) {
+    if (challan.isDelivered) return Colors.blue.shade50;
+    if (challan.isReady == 'Ready') return Colors.green.shade50;
+    return Colors.orange.shade50;
+  }
+
+  Color getBadgeTextColor(ChallanModel challan) {
+    if (challan.isDelivered) return Colors.blue.shade700;
+    if (challan.isReady == 'Ready') return Colors.green.shade700;
+    return Colors.orange.shade700;
+  }
+
+  String getBadgeText(ChallanModel challan) {
+    if (challan.isDelivered) return 'Delivered';
+    if (challan.isReady == 'Ready') return 'Ready';
+    return 'Pending';
+  }
+
   @override
   Widget build(BuildContext context) {
     final challanAsync = ref.watch(challanProvider);
@@ -33,7 +53,7 @@ class _WorkerDetailState extends ConsumerState<WorkerDetail> {
         return Scaffold(
           appBar: AppBar(
             title: Column(
-              crossAxisAlignment:CrossAxisAlignment.start ,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   widget.worker.workerName,
@@ -48,7 +68,8 @@ class _WorkerDetailState extends ConsumerState<WorkerDetail> {
                     Text(
                       widget.worker.workerType,
                       style: TextStyle(fontSize: 15),
-                    ),SizedBox(width: 10,),
+                    ),
+                    SizedBox(width: 10),
                     Text('$total challans', style: TextStyle(fontSize: 15)),
                   ],
                 ),
@@ -58,6 +79,7 @@ class _WorkerDetailState extends ConsumerState<WorkerDetail> {
           body: Padding(
             padding: const EdgeInsets.all(15.0),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -73,7 +95,11 @@ class _WorkerDetailState extends ConsumerState<WorkerDetail> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Icon(Icons.receipt_long, color: Colors.blue, size: 24),
+                          Icon(
+                            Icons.receipt_long,
+                            color: Colors.blue,
+                            size: 24,
+                          ),
                           SizedBox(height: 5),
                           Text(
                             total.toString(),
@@ -81,7 +107,10 @@ class _WorkerDetailState extends ConsumerState<WorkerDetail> {
                           ),
                           Text(
                             'Total Challan',
-                            style: TextStyle(color: AppColors.grey, fontSize: 15),
+                            style: TextStyle(
+                              color: AppColors.grey,
+                              fontSize: 15,
+                            ),
                           ),
                         ],
                       ),
@@ -109,7 +138,10 @@ class _WorkerDetailState extends ConsumerState<WorkerDetail> {
                           ),
                           Text(
                             'pending',
-                            style: TextStyle(color: AppColors.grey, fontSize: 15),
+                            style: TextStyle(
+                              color: AppColors.grey,
+                              fontSize: 15,
+                            ),
                           ),
                         ],
                       ),
@@ -142,8 +174,11 @@ class _WorkerDetailState extends ConsumerState<WorkerDetail> {
                             style: TextStyle(color: Colors.green, fontSize: 25),
                           ),
                           Text(
-                            'Delivered',
-                            style: TextStyle(color: AppColors.grey, fontSize: 15),
+                            'Completed',
+                            style: TextStyle(
+                              color: AppColors.grey,
+                              fontSize: 15,
+                            ),
                           ),
                         ],
                       ),
@@ -167,16 +202,123 @@ class _WorkerDetailState extends ConsumerState<WorkerDetail> {
                           SizedBox(height: 5),
                           Text(
                             piece.toString(),
-                            style: TextStyle(color: Colors.purple, fontSize: 25),
+                            style: TextStyle(
+                              color: Colors.purple,
+                              fontSize: 25,
+                            ),
                           ),
                           Text(
                             'Total pieces',
-                            style: TextStyle(color: AppColors.grey, fontSize: 15),
+                            style: TextStyle(
+                              color: AppColors.grey,
+                              fontSize: 15,
+                            ),
                           ),
                         ],
                       ),
                     ),
                   ],
+                ),
+                SizedBox(height: 10),
+                Text(
+                  'Challan History',
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 18,
+                    letterSpacing: 0.6,
+                  ),
+                ),
+                SizedBox(height: 10),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: workerChallans.length,
+                    itemBuilder: ((context, index) {
+                      final c = workerChallans[index];
+                      return Container(
+                        margin: EdgeInsets.only(bottom: 10),
+                        padding: EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(30),
+                          border: Border.all(color: Colors.black, width: 1),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  c.challanNo,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 23,
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                    vertical: 10,
+                                    horizontal: 15,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: getBadgeColor(c),
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
+                                  child: Text(
+                                    getBadgeText(c),
+                                    style: TextStyle(
+                                      color: getBadgeTextColor(c),
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Text(
+                              '${c.workersNames} ·${c.totalPiece}pcs',
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 15,
+                              ),
+                            ),
+                            Text(
+                              c.classification,
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 15,
+                              ),
+                            ),
+
+                            Divider(color: AppColors.primary),
+                            SizedBox(height: 10),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Given ${DateFormat('dd MMM yyyy').format(c.date)}',
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                                Text(
+                                  c.isDelivered
+                                      ? 'Delivered: ${DateFormat('dd MMM yyyy').format(c.deliveryDate!)}'
+                                      : 'No delivery yet',
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      );
+                    }),
+                  ),
                 ),
               ],
             ),
