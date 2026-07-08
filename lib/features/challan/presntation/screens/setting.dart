@@ -393,7 +393,7 @@ class _SettingState extends State<Setting> {
                                   saveStar();
                                   Navigator.pop(context);
                                 },
-                                child: Text('Give'),
+                                child: Text('Give 😍'),
                               ),
                             ],
                           ),

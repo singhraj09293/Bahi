@@ -1,6 +1,7 @@
 import 'package:challan_app/core/theme/app_theme.dart';
 import 'package:challan_app/features/workers/data/model/worker_model.dart';
 import 'package:challan_app/features/workers/presentation/provider/worker_provider.dart';
+import 'package:challan_app/features/workers/presentation/screens/worker_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -30,49 +31,56 @@ class _WorkerScreenState extends ConsumerState<WorkerScreen> {
                   itemBuilder: (context, index) {
                     return Padding(
                       padding: const EdgeInsets.all(10.0),
-                      child: Container(
-                        padding: EdgeInsets.all(15),
-                        margin: EdgeInsets.only(bottom: 10),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(color: Colors.black, width: 0.5),
+                      child: GestureDetector(
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => WorkerDetail(worker: work[index],)),
                         ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Name : ${work[index].workerName}',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20,
+                        child: Container(
+                          padding: EdgeInsets.all(15),
+                          margin: EdgeInsets.only(bottom: 10),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(color: Colors.black, width: 0.5),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Name : ${work[index].workerName}',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                ),
                               ),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  'Type ${work[index].workerType}',
-                                  style: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 15,
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Type ${work[index].workerType}',
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 15,
+                                    ),
                                   ),
-                                ),
-                                IconButton(
-                                  onPressed: () async {
-                                    await ref
-                                        .read(workerRepositoryProvider)
-                                        .deleteWorker(work[index].workerId);
-                                  },
-                                  icon: Icon(
-                                    Icons.delete,
-                                    color: AppColors.primary,
+                                  IconButton(
+                                    onPressed: () async {
+                                      await ref
+                                          .read(workerRepositoryProvider)
+                                          .deleteWorker(work[index].workerId);
+                                    },
+                                    icon: Icon(
+                                      Icons.delete,
+                                      color: AppColors.primary,
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          ],
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     );
@@ -98,7 +106,7 @@ class _WorkerScreenState extends ConsumerState<WorkerScreen> {
                             border: InputBorder.none,
                           ),
                         ),
-                        SizedBox(height: 10,),
+                        SizedBox(height: 10),
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
