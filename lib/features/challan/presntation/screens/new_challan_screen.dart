@@ -1,8 +1,10 @@
 import 'package:challan_app/core/theme/app_theme.dart';
+import 'package:challan_app/features/challan/data/models/challan_item.dart';
 import 'package:challan_app/features/challan/data/models/challan_model.dart';
 import 'package:challan_app/features/challan/presntation/provider/challan_provider.dart';
 import 'package:challan_app/features/workers/presentation/provider/worker_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
@@ -18,18 +20,41 @@ class _NewChallanScreenState extends ConsumerState<NewChallanScreen> {
   final List<String> workTypes = ['Embroidery', 'Handwork', 'Mirrors'];
   String? selectedWorkerId;
   String? selectedWorkerName;
+  List<ChallanItem> items = [];
   bool isReady = false;
   TextEditingController challannoProvider = TextEditingController();
   TextEditingController workerNameController = TextEditingController();
-  TextEditingController totalPieceController = TextEditingController();
+  TextEditingController materialController = TextEditingController();
+  TextEditingController qtyController = TextEditingController();
+  TextEditingController rateController = TextEditingController();
   TextEditingController classificationController = TextEditingController();
+  final List<Color> itemColors = [
+    AppColors.primary.withValues(alpha: 0.1),
+    Colors.green.withValues(alpha: 0.1),
+    Colors.grey.withValues(alpha: 0.1),
+  ];
+  int getTotalPieces() {
+    int total = 0;
+    for (var item in items) {
+      total = total + item.quantity;
+    }
+    return total;
+  }
+
+  double getTotalAmount() {
+    double total = 0;
+    for (var item in items) {
+      total = total + item.subtotal;
+    }
+    return total;
+  }
 
   @override
   void dispose() {
     super.dispose();
     challannoProvider.dispose();
     workerNameController.dispose();
-    totalPieceController.dispose();
+
     classificationController.dispose();
   }
 
@@ -66,8 +91,7 @@ class _NewChallanScreenState extends ConsumerState<NewChallanScreen> {
           TextButton(
             onPressed: () {
               if (challannoProvider.text.isEmpty ||
-                  selectedWorkerName!.isEmpty ||
-                  totalPieceController.text.isEmpty) {
+                  selectedWorkerName!.isEmpty) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(
@@ -83,11 +107,12 @@ class _NewChallanScreenState extends ConsumerState<NewChallanScreen> {
                 challanNo: challannoProvider.text.trim(),
                 date: DateTime.now(),
                 workersNames: '$selectedWorkerName $selectedWorkType',
-                totalPiece: int.parse(totalPieceController.text.trim()),
+                totalPiece: items.fold(0, (s, i) => s + i.quantity),
                 classification: classificationController.text.trim(),
                 isReady: isReady ? 'Ready' : 'Pending',
                 isDelivered: false,
                 workerid: selectedWorkerId ?? '',
+                items: items,
               );
               ref.read(challanRepositiaryProvider).addChallan(challan);
               Navigator.pop(context);
@@ -129,8 +154,10 @@ class _NewChallanScreenState extends ConsumerState<NewChallanScreen> {
                         Expanded(
                           child: TextField(
                             controller: challannoProvider,
+                            keyboardType: TextInputType.number,
                             decoration: InputDecoration(
                               hintText: 'e.g. 1234',
+
                               hintStyle: TextStyle(
                                 fontSize: 20,
                                 color: Colors.grey,
@@ -180,88 +207,205 @@ class _NewChallanScreenState extends ConsumerState<NewChallanScreen> {
               ),
               SizedBox(height: 20),
 
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
-                children: [
-                  Container(
-                    width: (MediaQuery.of(context).size.width - 60) / 2,
-                    padding: EdgeInsets.all(15),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(30),
-                      border: Border.all(color: Colors.black, width: 0.5),
+              Container(
+                padding: EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(30),
+                  border: Border.all(color: Colors.black, width: 0.5),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Add Items',
+                      style: TextStyle(fontSize: 18, color: Colors.grey),
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+
+                    TextField(
+                      controller: materialController,
+                      decoration: InputDecoration(
+                        hintText: 'Material',
+                        border: InputBorder.none,
+                        isDense: true,
+                        contentPadding: EdgeInsets.symmetric(vertical: 8),
+                      ),
+                    ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(
-                          'Total pieces',
-                          style: TextStyle(color: Colors.grey, fontSize: 18),
+                        Expanded(
+                          child: TextField(
+                            controller: qtyController,
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              hintText: 'Qty',
+                              border: InputBorder.none,
+                              isDense: true,
+                              contentPadding: EdgeInsets.symmetric(vertical: 8),
+                            ),
+                          ),
                         ),
-                        Row(
-                          children: [
-                            Icon(Icons.layers, color: AppColors.primary),
-                            SizedBox(width: 10),
-                            Expanded(
-                              child: TextField(
-                                controller: totalPieceController,
-                                keyboardType: TextInputType.number,
-                                decoration: InputDecoration(
-                                  hintText: '0',
+                        Expanded(
+                          child: TextField(
+                            controller: rateController,
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              hintText: 'Rate per piece',
+                              border: InputBorder.none,
+                              isDense: true,
+                              contentPadding: EdgeInsets.symmetric(vertical: 8),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
 
-                                  hintStyle: TextStyle(
-                                    color: Colors.grey,
-
-                                    fontSize: 18,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            if (rateController.text.isEmpty ||
+                                qtyController.text.isEmpty ||
+                                materialController.text.isEmpty) {
+                              return;
+                            }
+                            setState(() {
+                              items.add(
+                                ChallanItem(
+                                  materialName: materialController.text.trim(),
+                                  quantity: int.parse(
+                                    qtyController.text.trim(),
                                   ),
-                                  border: InputBorder.none,
+                                  ratePerPiece: double.parse(
+                                    rateController.text.trim(),
+                                  ),
+                                ),
+                              );
+                              materialController.clear();
+                              qtyController.clear();
+                              rateController.clear();
+                            });
+                          },
+                          child: Text('+ Add items'),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 10),
+              if (items.isNotEmpty)
+                Container(
+                  padding: EdgeInsets.all(15),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(color: Colors.black, width: 0.5),
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Items',
+                        style: TextStyle(color: Colors.grey, fontSize: 18),
+                      ),
+                      SizedBox(height: 10),
+                      for (int i = 0; i < items.length; i++)
+                        Container(
+                          margin: EdgeInsets.only(bottom: 8),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 10,
+                          ),
+                          decoration: BoxDecoration(
+                            color: itemColors[i % itemColors.length],
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                flex: 2,
+                                child: Text(items[i].materialName),
+                              ),
+                              Expanded(
+                                flex: 2,
+                                child: Text(
+                                  '${items[i].quantity} x ${items[i].ratePerPiece}',
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    width: (MediaQuery.of(context).size.width - 60) / 2,
-                    padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(30),
-                      border: Border.all(color: Colors.black, width: 0.5),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Status',
-                          style: TextStyle(color: Colors.grey, fontSize: 18),
-                        ),
-                        Row(
-                          children: [
-                            SizedBox(width: 5),
-                            Text(
-                              isReady ? 'Ready' : 'Pending',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 17,
+                              Expanded(
+                                child: Text(
+                                  '₹${items[i].subtotal}',
+                                  textAlign: TextAlign.right,
+                                ),
                               ),
-                            ),
-                            SizedBox(width: 5),
-                            Switch(
-                              value: isReady,
-                              activeThumbColor: AppColors.primary,
-                              onChanged: (value) =>
-                                  setState(() => isReady = value),
-                            ),
-                          ],
+
+                              IconButton(
+                                icon: Icon(
+                                  Icons.close,
+                                  color: Colors.red,
+                                  size: 23,
+                                ),
+                                padding: EdgeInsets.zero,
+                                constraints: BoxConstraints(),
+                                onPressed: () =>
+                                    setState(() => items.removeAt(i)),
+                              ),
+                            ],
+                          ),
+                        ),
+                      Divider(),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Total',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            '${getTotalPieces()} pcs · ₹${getTotalAmount()}',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              SizedBox(height: 20),
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(30),
+                  border: Border.all(color: Colors.black, width: 0.5),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Status',
+                      style: TextStyle(color: Colors.grey, fontSize: 18),
+                    ),
+                    Row(
+                      children: [
+                        SizedBox(width: 5),
+                        Text(
+                          isReady ? 'Ready' : 'Pending',
+                          style: TextStyle(color: Colors.black, fontSize: 17),
+                        ),
+                        Spacer(),
+                        Switch(
+                          value: isReady,
+                          activeThumbColor: AppColors.primary,
+                          onChanged: (value) => setState(() => isReady = value),
                         ),
                       ],
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
               SizedBox(height: 20),
               Container(

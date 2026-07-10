@@ -1,30 +1,22 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:challan_app/features/challan/data/models/challan_item.dart';
 import 'package:challan_app/features/challan/domain/entities/challan_entity.dart';
 
 class ChallanModel extends Challan {
   ChallanModel({
-    required String challanNo,
-    required DateTime date,
-    required String workersNames,
-    required int totalPiece,
-    required String classification,
-    required String isReady,
-    required bool isDelivered,
-    DateTime? deliveryDate,
-    required String workerid,
-  }) : super(
-         challanNo: challanNo,
-         date: date,
-         workersNames: workersNames,
-         totalPiece: totalPiece,
-         classification: classification,
-         isReady: isReady,
-         isDelivered: isDelivered,
-         deliveryDate: deliveryDate,
-         workerid: workerid,
-       );
+    required super.challanNo,
+    required super.date,
+    required super.workersNames,
+    required super.totalPiece,
+    required super.classification,
+    required super.isReady,
+    required super.isDelivered,
+    super.deliveryDate,
+    required super.workerid,
+    required super.items,
+  });
 
   ChallanModel copyWith({
     String? challanNo,
@@ -36,6 +28,7 @@ class ChallanModel extends Challan {
     bool? isDelivered,
     DateTime? deliveryDate,
     String? workerid,
+    List<ChallanItem>? items,
   }) {
     return ChallanModel(
       challanNo: challanNo ?? this.challanNo,
@@ -47,6 +40,7 @@ class ChallanModel extends Challan {
       isDelivered: isDelivered ?? this.isDelivered,
       deliveryDate: deliveryDate ?? this.deliveryDate,
       workerid: workerid ?? this.workerid,
+      items: items ?? this.items,
     );
   }
 
@@ -61,6 +55,7 @@ class ChallanModel extends Challan {
       'isDelivered': isDelivered,
       'deliveryDate': deliveryDate?.millisecondsSinceEpoch,
       'workerid': workerid,
+      'items': items.map((i) => i.toMap()).toList()
     };
   }
 
@@ -77,6 +72,7 @@ class ChallanModel extends Challan {
       deliveryDate: map['deliveryDate'] != null
           ? DateTime.fromMillisecondsSinceEpoch(map['deliveryDate'] as int)
           : null,
+      items: (map['items'] as List<dynamic>? ?? []).map((e) => ChallanItem.fromMap(e)).toList()
     );
   }
 
