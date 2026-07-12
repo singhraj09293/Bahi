@@ -50,6 +50,10 @@ class _WorkerDetailState extends ConsumerState<WorkerDetail> {
             .length;
         int completed = workerChallans.where((c) => c.isDelivered).length;
         int piece = workerChallans.fold(0, (sum, c) => sum + c.totalPiece);
+        double earning = 0;
+        for (var c in workerChallans) {
+          earning = earning + c.totalAmount;
+        }
         return Scaffold(
           appBar: AppBar(
             title: Column(
@@ -63,16 +67,6 @@ class _WorkerDetailState extends ConsumerState<WorkerDetail> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                Row(
-                  children: [
-                    Text(
-                      widget.worker.workerType,
-                      style: TextStyle(fontSize: 15),
-                    ),
-                    SizedBox(width: 10),
-                    Text('$total challans', style: TextStyle(fontSize: 15)),
-                  ],
-                ),
               ],
             ),
           ),
@@ -81,145 +75,132 @@ class _WorkerDetailState extends ConsumerState<WorkerDetail> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      width: 180,
-                      padding: EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: Colors.black, width: 0.5),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                Container(
+                  padding: EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(30),
+                    border: Border.all(color: Colors.black, width: 0.7),
+                  ),
+                  child: Column(
+                    children: [
+                      Row(
                         children: [
-                          Icon(
-                            Icons.receipt_long,
-                            color: Colors.blue,
-                            size: 24,
+                          Icon(Icons.person, color: Colors.grey),
+                          Text('Name', style: TextStyle(color: Colors.grey)),
+                          Spacer(),
+                          Text(
+                            worker.workerName,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                          SizedBox(height: 5),
+                        ],
+                      ),
+                      SizedBox(height: 5),
+                      Divider(color: Colors.grey),
+                      SizedBox(height: 5),
+                      Row(
+                        children: [
+                          Icon(Icons.build_outlined, color: Colors.grey),
+                          Text(
+                            'Work Type',
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                          Spacer(),
+                          Text(
+                            worker.workerType,
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 5),
+                      Divider(color: Colors.grey),
+                      SizedBox(height: 5),
+                      Row(
+                        children: [
+                          Icon(Icons.receipt_long, color: Colors.grey),
+                          Text(
+                            'Total challan',
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                          Spacer(),
                           Text(
                             total.toString(),
-                            style: TextStyle(color: Colors.blue, fontSize: 25),
-                          ),
-                          Text(
-                            'Total Challan',
-                            style: TextStyle(
-                              color: AppColors.grey,
-                              fontSize: 15,
-                            ),
+                            style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ],
                       ),
-                    ),
-                    Container(
-                      width: 180,
-                      padding: EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: Colors.black, width: 0.5),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      SizedBox(height: 5),
+                      Divider(color: Colors.grey),
+                      SizedBox(height: 5),
+                      Row(
                         children: [
-                          Icon(
-                            Icons.pending_actions,
-                            color: Colors.red,
-                            size: 24,
-                          ),
-                          SizedBox(height: 5),
+                          Icon(Icons.timer, color: Colors.grey),
+                          Text('Pending', style: TextStyle(color: Colors.grey)),
+                          Spacer(),
                           Text(
                             pending.toString(),
-                            style: TextStyle(color: Colors.red, fontSize: 25),
-                          ),
-                          Text(
-                            'pending',
-                            style: TextStyle(
-                              color: AppColors.grey,
-                              fontSize: 15,
-                            ),
+                            style: TextStyle(fontWeight: FontWeight.bold,color:Colors.red),
                           ),
                         ],
                       ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      width: 180,
-                      padding: EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: Colors.black, width: 0.5),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      SizedBox(height: 5),
+                      Divider(color: Colors.grey),
+                      SizedBox(height: 5),
+                      Row(
                         children: [
-                          Icon(
-                            Icons.check_circle_outline,
-                            color: Colors.green,
-                            size: 24,
-                          ),
-                          SizedBox(height: 5),
-                          Text(
-                            completed.toString(),
-                            style: TextStyle(color: Colors.green, fontSize: 25),
-                          ),
+                          Icon(Icons.check_circle_outline, color: Colors.grey),
                           Text(
                             'Completed',
-                            style: TextStyle(
-                              color: AppColors.grey,
-                              fontSize: 15,
-                            ),
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                          Spacer(),
+                          Text(
+                            completed.toString(),
+                            style: TextStyle(fontWeight: FontWeight.bold,color: Colors.green.shade700),
                           ),
                         ],
                       ),
-                    ),
-                    Container(
-                      width: 180,
-                      padding: EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: Colors.black, width: 0.5),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      SizedBox(height: 5),
+                      Divider(color: Colors.grey),
+                      SizedBox(height: 5),
+                      Row(
                         children: [
-                          Icon(
-                            Icons.layers_outlined,
-                            color: Colors.purple,
-                            size: 24,
+                          Icon(Icons.layers_outlined, color: Colors.grey),
+                          Text(
+                            'Total piece',
+                            style: TextStyle(color: Colors.grey),
                           ),
-                          SizedBox(height: 5),
+                          Spacer(),
                           Text(
                             piece.toString(),
-                            style: TextStyle(
-                              color: Colors.purple,
-                              fontSize: 25,
-                            ),
-                          ),
-                          Text(
-                            'Total pieces',
-                            style: TextStyle(
-                              color: AppColors.grey,
-                              fontSize: 15,
-                            ),
+                            style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ],
                       ),
-                    ),
-                  ],
+                      SizedBox(height: 5),
+                      Divider(color: Colors.grey),
+                      SizedBox(height: 5),
+                      Row(
+                        children: [
+                          Icon(Icons.currency_rupee, color: Colors.grey),
+                          Text(
+                            'Total Earning',
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                          Spacer(),
+                          Text(
+                            earning.toString(),
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-                SizedBox(height: 10),
+                SizedBox(height:10),
                 Text(
                   'Challan History',
                   style: TextStyle(

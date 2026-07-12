@@ -44,6 +44,14 @@ class ChallanModel extends Challan {
     );
   }
 
+  double get totalAmount {
+    double total = 0;
+    for (var item in items) {
+      total = total + item.subtotal;
+    }
+    return total;
+  }
+
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'challanNo': challanNo,
@@ -55,7 +63,7 @@ class ChallanModel extends Challan {
       'isDelivered': isDelivered,
       'deliveryDate': deliveryDate?.millisecondsSinceEpoch,
       'workerid': workerid,
-      'items': items.map((i) => i.toMap()).toList()
+      'items': items.map((i) => i.toMap()).toList(),
     };
   }
 
@@ -72,7 +80,9 @@ class ChallanModel extends Challan {
       deliveryDate: map['deliveryDate'] != null
           ? DateTime.fromMillisecondsSinceEpoch(map['deliveryDate'] as int)
           : null,
-      items: (map['items'] as List<dynamic>? ?? []).map((e) => ChallanItem.fromMap(e)).toList()
+      items: (map['items'] as List<dynamic>? ?? [])
+          .map((e) => ChallanItem.fromMap(e))
+          .toList(),
     );
   }
 

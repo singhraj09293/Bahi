@@ -64,10 +64,7 @@ class _DetailChallanState extends ConsumerState<DetailChallan> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Challan info',
-                      style: TextStyle(color: Colors.grey),
-                    ),
+                    Text('Challan info', style: TextStyle(color: Colors.grey)),
                     SizedBox(height: 20),
                     Row(
                       children: [
@@ -145,21 +142,54 @@ class _DetailChallanState extends ConsumerState<DetailChallan> {
                     SizedBox(height: 5),
                     Divider(color: Colors.grey),
                     SizedBox(height: 5),
+                    for (int i = 0; i < widget.challan.items.length; i++)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 5.0),
+                      child: Row(
+                        children: [
+                          Icon(Icons.checkroom, color: Colors.grey),
+                          Text('Material ${i+1}', style: TextStyle(color: Colors.grey)),
+                          Spacer(),
+                            Text(
+                              widget.challan.items[i].materialName,
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 5),
+                    Divider(color: Colors.grey),
+                    SizedBox(height: 5),
                     Row(
                       children: [
-                        Icon(
-                          Icons.calendar_today_outlined,
-                          color: Colors.grey,
-                        ),
+                        Icon(Icons.calendar_today_outlined, color: Colors.grey),
                         Text(
                           'Given Date',
                           style: TextStyle(color: Colors.grey),
                         ),
                         Spacer(),
                         Text(
-                          DateFormat(
-                            'dd MMM yyyy',
-                          ).format(widget.challan.date),
+                          DateFormat('dd MMM yyyy').format(widget.challan.date),
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 5),
+                    Divider(color: Colors.grey),
+                    SizedBox(height: 5),
+                    Row(
+                      children: [
+                        Icon(Icons.currency_rupee, color: Colors.grey),
+                        Text('Total', style: TextStyle(color: Colors.grey)),
+                        Spacer(),
+                        Text(
+                          widget.challan.totalAmount.toString(),
                           style: TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.bold,
@@ -213,14 +243,8 @@ class _DetailChallanState extends ConsumerState<DetailChallan> {
                     SizedBox(height: 5),
                     Row(
                       children: [
-                        Icon(
-                          Icons.local_shipping_outlined,
-                          color: Colors.grey,
-                        ),
-                        Text(
-                          'Delivery',
-                          style: TextStyle(color: Colors.grey),
-                        ),
+                        Icon(Icons.local_shipping_outlined, color: Colors.grey),
+                        Text('Delivery', style: TextStyle(color: Colors.grey)),
                         Spacer(),
                         Text(
                           widget.challan.isDelivered
@@ -292,7 +316,7 @@ class _DetailChallanState extends ConsumerState<DetailChallan> {
                   ),
                   onPressed: () async {
                     final updated = widget.challan.copyWith(isReady: 'Ready');
-                    
+
                     await ref
                         .read(challanRepositiaryProvider)
                         .updateChallan(updated);

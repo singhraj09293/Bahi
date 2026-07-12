@@ -29,16 +29,16 @@ class _WorkerScreenState extends ConsumerState<WorkerScreen> {
                 child: ListView.builder(
                   itemCount: work.length,
                   itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: GestureDetector(
-                        onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (_) => WorkerDetail(worker: work[index],)),
-                        ),
+                    return GestureDetector(
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => WorkerDetail(worker: work[index],)),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(5.0),
                         child: Container(
-                          padding: EdgeInsets.all(15),
-                          margin: EdgeInsets.only(bottom: 10),
+                          padding: EdgeInsets.all(10),
+                         margin: EdgeInsets.only(bottom: 5),
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(20),
