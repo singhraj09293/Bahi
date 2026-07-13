@@ -16,8 +16,8 @@ class NewChallanScreen extends ConsumerStatefulWidget {
 }
 
 class _NewChallanScreenState extends ConsumerState<NewChallanScreen> {
-  String selectedWorkType = 'Embroidery';
-  final List<String> workTypes = ['Embroidery', 'Handwork', 'Mirrors'];
+
+
   String? selectedWorkerId;
   String? selectedWorkerName;
   List<ChallanItem> items = [];
@@ -48,6 +48,7 @@ class _NewChallanScreenState extends ConsumerState<NewChallanScreen> {
     }
     return total;
   }
+  
 
   @override
   void dispose() {
@@ -106,7 +107,7 @@ class _NewChallanScreenState extends ConsumerState<NewChallanScreen> {
               final challan = ChallanModel(
                 challanNo: challannoProvider.text.trim(),
                 date: DateTime.now(),
-                workersNames: '$selectedWorkerName $selectedWorkType',
+                workersNames: selectedWorkerName ?? '',
                 totalPiece: items.fold(0, (s, i) => s + i.quantity),
                 classification: classificationController.text.trim(),
                 isReady: isReady ? 'Ready' : 'Pending',
