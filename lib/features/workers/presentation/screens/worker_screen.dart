@@ -13,9 +13,20 @@ class WorkerScreen extends ConsumerStatefulWidget {
 }
 
 class _WorkerScreenState extends ConsumerState<WorkerScreen> {
-  String selectedWorkType = 'Embroidery';
-  final List<String> workTypes = ['Embroidery', 'Handwork', 'Mirrors'];
   TextEditingController workerName = TextEditingController();
+  TextEditingController workerType = TextEditingController();
+  final List<Color> avatarColors = [
+    Colors.orange[100]!,
+    Colors.green[100]!,
+    Colors.blue[100]!,
+    Colors.purple[100]!,
+  ];
+  final List<Color> textColors = [
+    Colors.orange.shade800,
+    Colors.green.shade800,
+    Colors.blue.shade800,
+    Colors.purple.shade800,
+  ];
   @override
   Widget build(BuildContext context) {
     final worker = ref.watch(workerProvider);
@@ -32,52 +43,98 @@ class _WorkerScreenState extends ConsumerState<WorkerScreen> {
                     return GestureDetector(
                       onTap: () => Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => WorkerDetail(worker: work[index],)),
+                        MaterialPageRoute(
+                          builder: (_) => WorkerDetail(worker: work[index]),
+                        ),
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.all(5.0),
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 7.0,
+                          horizontal: 15,
+                        ),
                         child: Container(
-                          padding: EdgeInsets.all(10),
-                         margin: EdgeInsets.only(bottom: 5),
+                          padding: EdgeInsets.all(20),
+
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(20),
                             border: Border.all(color: Colors.black, width: 0.5),
                           ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          child: Row(
                             children: [
-                              Text(
-                                'Name : ${work[index].workerName}',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
+                              CircleAvatar(
+                                radius: 35,
+                                backgroundColor:
+                                    avatarColors[index % avatarColors.length],
+                                child: Text(
+                                  work[index].workerName[0].toUpperCase(),
+                                  style: TextStyle(
+                                    color:
+                                        textColors[index % textColors.length],
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 25,
+                                  ),
                                 ),
                               ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    'Type ${work[index].workerType}',
-                                    style: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: 15,
+                              SizedBox(width: 10),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SizedBox(
+                                      height: 22,
+                                      child: Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          ' ${work[index].workerName}',
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 20,
+                                            height: 1.0,
+                                          ),
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                  IconButton(
-                                    onPressed: () async {
-                                      await ref
-                                          .read(workerRepositoryProvider)
-                                          .deleteWorker(work[index].workerId);
-                                    },
-                                    icon: Icon(
-                                      Icons.delete,
-                                      color: AppColors.primary,
+                                    SizedBox(
+                                      height: 20,
+                                      child: Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              work[index].workerType,
+                                              style: TextStyle(
+                                                color: Colors.grey,
+                                                fontSize: 15,
+                                              ),
+                                            ),
+                                            Spacer(),
+                                            IconButton(
+                                              padding: EdgeInsets.zero,
+                                              constraints: BoxConstraints(),
+                                              onPressed: () async {
+                                                await ref
+                                                    .read(
+                                                      workerRepositoryProvider,
+                                                    )
+                                                    .deleteWorker(
+                                                      work[index].workerId,
+                                                    );
+                                              },
+                                              icon: Icon(
+                                                Icons.delete_outline,
+                                                color: AppColors.primary,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ],
                           ),
@@ -107,86 +164,11 @@ class _WorkerScreenState extends ConsumerState<WorkerScreen> {
                           ),
                         ),
                         SizedBox(height: 10),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                setDialogState(() {
-                                  selectedWorkType = workTypes[0];
-                                });
-                              },
-                              child: Container(
-                                padding: EdgeInsets.all(15),
-                                decoration: BoxDecoration(
-                                  color: selectedWorkType == 'Embroidery'
-                                      ? AppColors.primary
-                                      : AppColors.background,
-                                  borderRadius: BorderRadius.circular(30),
-                                ),
-                                child: Text(
-                                  'Embroidery',
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    color: selectedWorkType == 'Embroidery'
-                                        ? Colors.white
-                                        : Colors.black,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(width: 20),
-                            GestureDetector(
-                              onTap: () {
-                                setDialogState(() {
-                                  selectedWorkType = workTypes[1];
-                                });
-                              },
-                              child: Container(
-                                padding: EdgeInsets.all(15),
-                                decoration: BoxDecoration(
-                                  color: selectedWorkType == 'Handwork'
-                                      ? AppColors.primary
-                                      : AppColors.background,
-                                  borderRadius: BorderRadius.circular(30),
-                                ),
-                                child: Text(
-                                  'Handwork',
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    color: selectedWorkType == 'Handwork'
-                                        ? Colors.white
-                                        : Colors.black,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 10),
-                        GestureDetector(
-                          onTap: () {
-                            setDialogState(() {
-                              selectedWorkType = workTypes[2];
-                            });
-                          },
-                          child: Container(
-                            padding: EdgeInsets.all(15),
-                            decoration: BoxDecoration(
-                              color: selectedWorkType == 'Mirrors'
-                                  ? AppColors.primary
-                                  : AppColors.background,
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                            child: Text(
-                              'Mirrors',
-                              style: TextStyle(
-                                fontSize: 15,
-                                color: selectedWorkType == 'Mirrors'
-                                    ? Colors.white
-                                    : Colors.black,
-                              ),
-                            ),
+                        TextField(
+                          controller: workerType,
+                          decoration: InputDecoration(
+                            hintText: 'Worker Role (optional)',
+                            border: InputBorder.none,
                           ),
                         ),
                       ],
@@ -206,7 +188,9 @@ class _WorkerScreenState extends ConsumerState<WorkerScreen> {
                                       .millisecondsSinceEpoch
                                       .toString(),
                                   workerName: workerName.text.trim(),
-                                  workerType: selectedWorkType,
+                                  workerType: workerType.text.trim().isEmpty
+                                      ? 'General'
+                                      : workerType.text.trim(),
                                 ),
                               );
                           Navigator.pop(context);

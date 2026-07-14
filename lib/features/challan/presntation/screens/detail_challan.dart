@@ -1,7 +1,6 @@
 import 'package:challan_app/core/theme/app_theme.dart';
 import 'package:challan_app/features/challan/data/models/challan_item.dart';
 import 'package:challan_app/features/challan/data/models/challan_model.dart';
-import 'package:challan_app/features/challan/data/repositories/challan_repository.dart';
 import 'package:challan_app/features/challan/presntation/provider/challan_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -83,6 +82,7 @@ class _DetailChallanState extends ConsumerState<DetailChallan> {
               ref
                   .read(challanRepositiaryProvider)
                   .deleteChallan(widget.challan.challanNo);
+              Navigator.pop(context);
             },
             icon: Icon(Icons.delete),
           ),
@@ -193,19 +193,31 @@ class _DetailChallanState extends ConsumerState<DetailChallan> {
                           padding: const EdgeInsets.only(bottom: 5.0),
                           child: GestureDetector(
                             onTap: () => editCompletedQty(i),
-                            child: Row(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Icon(Icons.checkroom, color: Colors.grey),
-                                Text(
-                                  'Material ${i + 1}',
-                                  style: TextStyle(color: Colors.grey),
+                                Row(
+                                  children: [
+                                    Icon(Icons.checkroom, color: Colors.grey),
+                                    Text(
+                                      'Material ${i + 1}',
+                                      style: TextStyle(color: Colors.grey),
+                                    ),
+                                    Spacer(),
+                                    Text(
+                                      widget.challan.items[i].materialName,
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                Spacer(),
                                 Text(
-                                  widget.challan.items[i].materialName,
+                                  '${widget.challan.items[i].completedQuantity}/${widget.challan.items[i].quantity} done',
                                   style: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold,
+                                    color: Colors.grey,
+                                    fontSize: 12,
                                   ),
                                 ),
                               ],
