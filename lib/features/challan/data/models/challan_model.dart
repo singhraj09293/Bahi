@@ -16,6 +16,10 @@ class ChallanModel extends Challan {
     super.deliveryDate,
     required super.workerid,
     required super.items,
+    super.lotCameDate,
+    super.afterComingDate,
+    required super.garmentTypes,
+    required super.sethid,
   });
 
   ChallanModel copyWith({
@@ -29,6 +33,10 @@ class ChallanModel extends Challan {
     DateTime? deliveryDate,
     String? workerid,
     List<ChallanItem>? items,
+    DateTime? lotCameDate,
+    DateTime? afterComingDate,
+    List<String>? garmentTypes,
+    String? sethid,
   }) {
     return ChallanModel(
       challanNo: challanNo ?? this.challanNo,
@@ -41,6 +49,10 @@ class ChallanModel extends Challan {
       deliveryDate: deliveryDate ?? this.deliveryDate,
       workerid: workerid ?? this.workerid,
       items: items ?? this.items,
+      lotCameDate: lotCameDate ?? this.lotCameDate,
+      afterComingDate: afterComingDate ?? this.afterComingDate,
+      garmentTypes: garmentTypes ?? this.garmentTypes,
+      sethid: sethid ?? this.sethid,
     );
   }
 
@@ -64,6 +76,10 @@ class ChallanModel extends Challan {
       'deliveryDate': deliveryDate?.millisecondsSinceEpoch,
       'workerid': workerid,
       'items': items.map((i) => i.toMap()).toList(),
+      'lotCameDate': lotCameDate?.millisecondsSinceEpoch,
+      'afterComingDate': afterComingDate?.millisecondsSinceEpoch,
+      'garmentTypes': garmentTypes,
+      'sethid' : sethid,
     };
   }
 
@@ -83,6 +99,14 @@ class ChallanModel extends Challan {
       items: (map['items'] as List<dynamic>? ?? [])
           .map((e) => ChallanItem.fromMap(e))
           .toList(),
+      lotCameDate: map['lotCameDate'] != null
+          ? DateTime.fromMillisecondsSinceEpoch(map['lotCameDate'])
+          : null,
+      afterComingDate: map['afterComingDate'] != null
+          ? DateTime.fromMillisecondsSinceEpoch(map['afterComingDate'])
+          : null,
+      garmentTypes: List<String>.from(map['garmentTypes'] ?? []),
+      sethid: map['sethid'] as String? ?? '',
     );
   }
 

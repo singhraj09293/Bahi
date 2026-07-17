@@ -270,6 +270,84 @@ class _DetailChallanState extends ConsumerState<DetailChallan> {
                           SizedBox(height: 5),
                           Row(
                             children: [
+                              Icon(
+                                Icons.calendar_month_outlined,
+                                color: Colors.grey,
+                              ),
+                              Text(
+                                'Lot Came',
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                              Spacer(),
+                              Text(
+                                widget.challan.lotCameDate == null
+                                    ? '-'
+                                    : DateFormat(
+                                        'dd MMM yyyy',
+                                      ).format(widget.challan.lotCameDate!),
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 5),
+                          Divider(color: Colors.grey),
+                          SizedBox(height: 5),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.calendar_month_outlined,
+                                color: Colors.grey,
+                              ),
+                              Text(
+                                'Work Started',
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                              Spacer(),
+                              Text(
+                                widget.challan.afterComingDate == null
+                                    ? '-'
+                                    : DateFormat(
+                                        'dd MMM yyyy',
+                                      ).format(widget.challan.afterComingDate!),
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 5),
+                          Divider(color: Colors.grey),
+                          SizedBox(height: 5),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.checkroom_outlined,
+                                color: Colors.grey,
+                              ),
+                              Text(
+                                'Garment',
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                              Spacer(),
+                              Text(
+                                widget.challan.garmentTypes.join(', '),
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          SizedBox(height: 5),
+                          Divider(color: Colors.grey),
+                          SizedBox(height: 5),
+                          Row(
+                            children: [
                               Icon(Icons.currency_rupee, color: Colors.grey),
                               Text(
                                 'Total',

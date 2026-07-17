@@ -2,6 +2,7 @@ import 'package:challan_app/core/theme/app_theme.dart';
 import 'package:challan_app/features/challan/data/models/challan_item.dart';
 import 'package:challan_app/features/challan/data/models/challan_model.dart';
 import 'package:challan_app/features/challan/presntation/provider/challan_provider.dart';
+import 'package:challan_app/features/seth/presentation/provider/seth_provider.dart';
 import 'package:challan_app/features/workers/presentation/provider/worker_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,11 +17,15 @@ class NewChallanScreen extends ConsumerStatefulWidget {
 }
 
 class _NewChallanScreenState extends ConsumerState<NewChallanScreen> {
-
-
+  DateTime? lotCameDate;
+  DateTime? afterComingDate;
+  List<String> selectedGarments = [];
+  final List<String> garmentOptions = ['Kurta', 'Pajama', 'Dupatta'];
   String? selectedWorkerId;
   String? selectedWorkerName;
   List<ChallanItem> items = [];
+  String? selectedMasterId;
+  String? selectedMasterName;
   bool isReady = false;
   TextEditingController challannoProvider = TextEditingController();
   TextEditingController workerNameController = TextEditingController();
@@ -48,7 +53,6 @@ class _NewChallanScreenState extends ConsumerState<NewChallanScreen> {
     }
     return total;
   }
-  
 
   @override
   void dispose() {
@@ -62,6 +66,7 @@ class _NewChallanScreenState extends ConsumerState<NewChallanScreen> {
   @override
   Widget build(BuildContext context) {
     final workerAsync = ref.watch(workerProvider);
+    final sethAsync = ref.watch(sethProvider);
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 65,
@@ -114,6 +119,10 @@ class _NewChallanScreenState extends ConsumerState<NewChallanScreen> {
                 isDelivered: false,
                 workerid: selectedWorkerId ?? '',
                 items: items,
+                lotCameDate: lotCameDate,
+                afterComingDate: afterComingDate,
+                garmentTypes: selectedGarments,
+                sethid: selectedMasterId ?? '',
               );
               ref.read(challanRepositiaryProvider).addChallan(challan);
               Navigator.pop(context);
@@ -206,7 +215,7 @@ class _NewChallanScreenState extends ConsumerState<NewChallanScreen> {
                   loading: () => Center(child: CircularProgressIndicator()),
                 ),
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 10),
 
               Container(
                 padding: EdgeInsets.all(12),
@@ -375,7 +384,7 @@ class _NewChallanScreenState extends ConsumerState<NewChallanScreen> {
                     ],
                   ),
                 ),
-              SizedBox(height: 20),
+              SizedBox(height: 10),
               Container(
                 padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
                 decoration: BoxDecoration(
@@ -408,7 +417,7 @@ class _NewChallanScreenState extends ConsumerState<NewChallanScreen> {
                   ],
                 ),
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 10),
               Container(
                 padding: EdgeInsets.all(15),
                 decoration: BoxDecoration(
@@ -448,7 +457,121 @@ class _NewChallanScreenState extends ConsumerState<NewChallanScreen> {
                   ],
                 ),
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 10),
+              Container(
+                padding: EdgeInsets.all(15),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(30),
+                  border: Border.all(color: Colors.black, width: 0.5),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    GestureDetector(
+                      onTap: () async {
+                        final date = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime(2024),
+                          lastDate: DateTime(2030),
+                        );
+                        if (date != null) setState(() => lotCameDate = date);
+                      },
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.calendar_today_outlined,
+                            color: AppColors.primary,
+                          ),
+                          SizedBox(width: 10),
+                          Text('Lot Came Date'),
+                          Spacer(),
+                          Text(
+                            lotCameDate == null
+                                ? 'Select'
+                                : DateFormat(
+                                    'dd MMM yyyy',
+                                  ).format(lotCameDate!),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Divider(),
+                    GestureDetector(
+                      onTap: () async {
+                        final date = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime(2024),
+                          lastDate: DateTime(2030),
+                        );
+                        if (date != null)
+                          setState(() => afterComingDate = date);
+                      },
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.calendar_today_outlined,
+                            color: AppColors.primary,
+                          ),
+                          SizedBox(width: 10),
+                          Text('After Coming Date'),
+                          Spacer(),
+                          Text(
+                            afterComingDate == null
+                                ? 'Select'
+                                : DateFormat(
+                                    'dd MMM yyyy',
+                                  ).format(afterComingDate!),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 10),
+              Container(
+                width: double.infinity,
+                padding: EdgeInsets.all(15),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(30),
+                  border: Border.all(color: Colors.black, width: 0.5),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Garment Type',
+                      style: TextStyle(color: Colors.grey, fontSize: 18),
+                    ),
+                    Wrap(
+                      spacing: 10,
+                      children: garmentOptions.map((g) {
+                        final selected = selectedGarments.contains(g);
+                        return FilterChip(
+                          label: Text(g),
+                          selected: selected,
+                          selectedColor: AppColors.primary,
+                          onSelected: (val) {
+                            setState(() {
+                              if (val) {
+                                selectedGarments.add(g);
+                              } else {
+                                selectedGarments.remove(g);
+                              }
+                            });
+                          },
+                        );
+                      }).toList(),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 10),
+
               Container(
                 padding: EdgeInsets.all(15),
                 decoration: BoxDecoration(

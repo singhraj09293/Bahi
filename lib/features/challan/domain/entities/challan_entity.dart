@@ -11,6 +11,10 @@ class Challan {
   final bool isDelivered;
   final DateTime? deliveryDate;
   final List<ChallanItem> items;
+  final DateTime? lotCameDate;
+  final DateTime? afterComingDate;
+  final List<String> garmentTypes;
+  final String sethid;
 
   const Challan({
     required this.challanNo,
@@ -23,5 +27,9 @@ class Challan {
     this.deliveryDate,
     required this.workerid,
     required this.items,
+    this.lotCameDate,
+    this.afterComingDate,
+    required this.garmentTypes,
+     required this.sethid,
   });
 }

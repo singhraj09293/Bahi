@@ -20,42 +20,65 @@ class _MainScreenState extends State<MainScreen> {
     HistoryScreen(),
     WorkerScreen(),
   ];
+  Widget navItem(int index, IconData icon, IconData activeIcon, String label) {
+    bool isActive = currentIndex == index;
+    return GestureDetector(
+      onTap: () => setState(() => currentIndex = index),
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+        decoration: BoxDecoration(
+          color: isActive
+              ? AppColors.primary.withValues(alpha: 0.15)
+              : Colors.transparent,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              isActive ? activeIcon : icon,
+              color: isActive ? AppColors.primary : AppColors.grey,
+            ),
+            SizedBox(height: 2),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 11,
+                color: isActive ? AppColors.primary : AppColors.grey,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: screen[currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.white,
-        selectedItemColor: AppColors.primary, // saffron orange
-        unselectedItemColor: AppColors.grey,
-        selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
-        elevation: 8,
-        type: BottomNavigationBarType.fixed,
-        currentIndex: currentIndex,
-        onTap: (value) => setState(() => currentIndex = value),
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.dashboard_outlined),
-            activeIcon: Icon(Icons.dashboard),
-            label: 'Dashboard',
+      bottomNavigationBar: Container(
+        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border(
+            top: BorderSide(color: AppColors.grey.withValues(alpha: 0.3)),
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.receipt_long_outlined),
-            activeIcon: Icon(Icons.receipt_long),
-            label: 'Challans',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.history_outlined),
-            activeIcon: Icon(Icons.history),
-            label: 'History',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.people_outline),
-            activeIcon: Icon(Icons.people),
-            label: 'Workers',
-          ),
-        ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            navItem(0, Icons.dashboard_outlined, Icons.dashboard, 'Home'),
+            navItem(
+              1,
+              Icons.receipt_long_outlined,
+              Icons.receipt_long,
+              'Challans',
+            ),
+            navItem(2, Icons.history_outlined, Icons.history, 'Logs'),
+            navItem(3, Icons.people_outline, Icons.people, 'Staff'),
+          ],
+        ),
       ),
     );
   }

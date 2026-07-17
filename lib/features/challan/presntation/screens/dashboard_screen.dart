@@ -2,6 +2,7 @@ import 'package:challan_app/core/theme/app_theme.dart';
 import 'package:challan_app/features/challan/presntation/provider/challan_provider.dart';
 import 'package:challan_app/features/challan/presntation/screens/new_challan_screen.dart';
 import 'package:challan_app/features/challan/presntation/screens/setting.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -20,28 +21,45 @@ class DashboardScreen extends ConsumerWidget {
         int totalPiece = challans.fold(0, (sum, c) => sum + c.totalPiece);
         final recent = challans.take(3).toList();
         String today = DateFormat('dd MMMM yyyy').format(DateTime.now());
+        final name = FirebaseAuth.instance.currentUser?.displayName ?? 'U';
         return Scaffold(
           appBar: AppBar(
-            toolbarHeight: 80,
+            backgroundColor: AppColors.primary.withValues(alpha:0.90),
+            toolbarHeight: 55,
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Bahi',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
+                Padding(
+                  padding: const EdgeInsets.only(left: 10.0),
+                  child: Text(
+                    'Bahi',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
+                  ),
                 ),
-                Text('Welcome Back!', style: TextStyle(fontSize: 20)),
               ],
             ),
             actions: [
-              IconButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => Setting()),
-                  );
-                },
-                icon: Icon(Icons.settings, color: Colors.white),
+              Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => Setting()),
+                    );
+                  },
+                  child: CircleAvatar(
+                    backgroundColor: Colors.white,
+                    child: Text(
+                      name[0].toUpperCase(),
+                      style: TextStyle(
+                        color: AppColors.primary,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20
+                      ),
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
@@ -50,6 +68,9 @@ class DashboardScreen extends ConsumerWidget {
             child: SingleChildScrollView(
               child: Column(
                 children: [
+                  Text('Welcome Back!',style: TextStyle(
+                    color: Colors.black
+                  ),),
                   Container(
                     padding: EdgeInsets.all(20),
                     decoration: BoxDecoration(
