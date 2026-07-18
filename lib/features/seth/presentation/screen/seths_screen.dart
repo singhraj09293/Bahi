@@ -1,20 +1,19 @@
 import 'package:challan_app/core/theme/app_theme.dart';
-import 'package:challan_app/features/workers/data/model/worker_model.dart';
-import 'package:challan_app/features/workers/presentation/provider/worker_provider.dart';
-import 'package:challan_app/features/workers/presentation/screens/worker_detail.dart';
+import 'package:challan_app/features/seth/data/model/seth_model.dart';
+import 'package:challan_app/features/seth/presentation/provider/seth_provider.dart';
+import 'package:challan_app/features/seth/presentation/screen/seth_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class WorkerScreen extends ConsumerStatefulWidget {
-  const WorkerScreen({super.key});
+class SethsScreen extends ConsumerStatefulWidget {
+  const SethsScreen({super.key});
 
   @override
-  ConsumerState<WorkerScreen> createState() => _WorkerScreenState();
+  ConsumerState<SethsScreen> createState() => _SethsScreenState();
 }
 
-class _WorkerScreenState extends ConsumerState<WorkerScreen> {
-  TextEditingController workerName = TextEditingController();
-  TextEditingController workerType = TextEditingController();
+class _SethsScreenState extends ConsumerState<SethsScreen> {
+  TextEditingController sethName = TextEditingController();
   final List<Color> avatarColors = [
     Colors.orange[100]!,
     Colors.green[100]!,
@@ -29,22 +28,22 @@ class _WorkerScreenState extends ConsumerState<WorkerScreen> {
   ];
   @override
   Widget build(BuildContext context) {
-    final worker = ref.watch(workerProvider);
-    return worker.when(
-      data: (work) {
+    final seth = ref.watch(sethProvider);
+    return seth.when(
+      data: (seth) {
         return Stack(
           children: [
             Column(
               children: [
                 Expanded(
                   child: ListView.builder(
-                    itemCount: work.length,
+                    itemCount: seth.length,
                     itemBuilder: (context, index) {
                       return GestureDetector(
                         onTap: () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => WorkerDetail(worker: work[index]),
+                            builder: (_) => SethDetail(seth: seth[index]),
                           ),
                         ),
                         child: Padding(
@@ -70,7 +69,7 @@ class _WorkerScreenState extends ConsumerState<WorkerScreen> {
                                   backgroundColor:
                                       avatarColors[index % avatarColors.length],
                                   child: Text(
-                                    work[index].workerName[0].toUpperCase(),
+                                    seth[index].masterName[0].toUpperCase(),
                                     style: TextStyle(
                                       color:
                                           textColors[index % textColors.length],
@@ -90,7 +89,7 @@ class _WorkerScreenState extends ConsumerState<WorkerScreen> {
                                         child: Align(
                                           alignment: Alignment.centerLeft,
                                           child: Text(
-                                            ' ${work[index].workerName}',
+                                            ' ${seth[index].masterName}',
                                             style: TextStyle(
                                               color: Colors.black,
                                               fontWeight: FontWeight.bold,
@@ -109,7 +108,7 @@ class _WorkerScreenState extends ConsumerState<WorkerScreen> {
                                                 CrossAxisAlignment.center,
                                             children: [
                                               Text(
-                                                work[index].workerType,
+                                                seth[index].masterId,
                                                 style: TextStyle(
                                                   color: Colors.grey,
                                                   fontSize: 15,
@@ -122,10 +121,10 @@ class _WorkerScreenState extends ConsumerState<WorkerScreen> {
                                                 onPressed: () async {
                                                   await ref
                                                       .read(
-                                                        workerRepositoryProvider,
+                                                        masterRepositoryProvider,
                                                       )
-                                                      .deleteWorker(
-                                                        work[index].workerId,
+                                                      .deleteSeth(
+                                                        seth[index].masterId,
                                                       );
                                                 },
                                                 icon: Icon(
@@ -148,77 +147,66 @@ class _WorkerScreenState extends ConsumerState<WorkerScreen> {
                     },
                   ),
                 ),
-                Positioned(
-                  bottom: 20,
-                  right: 20,
-                  child: FloatingActionButton.extended(
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (_) => StatefulBuilder(
-                          builder: (context, setDialogState) => AlertDialog(
-                            title: Text('Add Worker'),
-                            content: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                TextField(
-                                  controller: workerName,
-                                  decoration: InputDecoration(
-                                    hintText: 'Worker Name',
-                                    border: InputBorder.none,
-                                  ),
-                                ),
-                                SizedBox(height: 10),
-                                TextField(
-                                  controller: workerType,
-                                  decoration: InputDecoration(
-                                    hintText: 'Worker Role (optional)',
-                                    border: InputBorder.none,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.pop(context),
-                                child: Text('Cancel'),
-                              ),
-                              TextButton(
-                                onPressed: () async {
-                                  await ref
-                                      .read(workerRepositoryProvider)
-                                      .addWorker(
-                                        WorkerModel(
-                                          workerId: DateTime.now()
-                                              .millisecondsSinceEpoch
-                                              .toString(),
-                                          workerName: workerName.text.trim(),
-                                          workerType:
-                                              workerType.text.trim().isEmpty
-                                              ? 'General'
-                                              : workerType.text.trim(),
-                                        ),
-                                      );
-                                  Navigator.pop(context);
-                                },
-                                child: Text('Save'),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                    label: Text('Add Worker'),
-                    icon: Icon(Icons.add),
-                  ),
-                ),
               ],
+            ),
+            Positioned(
+              bottom: 20,
+              right: 20,
+              child: FloatingActionButton.extended(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (_) => StatefulBuilder(
+                      builder: (context, setDialogState) => AlertDialog(
+                        title: Text('Add Master'),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            TextField(
+                              controller: sethName,
+                              decoration: InputDecoration(
+                                hintText: 'Master Name',
+                                border: InputBorder.none,
+                              ),
+                            ),
+                            SizedBox(height: 10),
+                          ],
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: Text('Cancel'),
+                          ),
+                          TextButton(
+                            onPressed: () async {
+                              await ref
+                                  .read(masterRepositoryProvider)
+                                  .addSeth(
+                                    SethModel(
+                                      masterId: DateTime.now()
+                                          .millisecondsSinceEpoch
+                                          .toString(),
+                                      masterName: sethName.text.trim(),
+                                    ),
+                                  );
+                              Navigator.pop(context);
+                            },
+                            child: Text('Save'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+                label: Text('Add Master'),
+                icon: Icon(Icons.add),
+              ), // unchanged
             ),
           ],
         );
       },
-      error: (e, st) => Text('Error $e'),
-      loading: (() => Center(child: CircularProgressIndicator())),
+      error: (e, st) => Text('Erorr $e'),
+      loading: () => Center(child: CircularProgressIndicator()),
     );
   }
 }

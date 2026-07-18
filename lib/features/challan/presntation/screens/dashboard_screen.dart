@@ -2,6 +2,7 @@ import 'package:challan_app/core/theme/app_theme.dart';
 import 'package:challan_app/features/challan/presntation/provider/challan_provider.dart';
 import 'package:challan_app/features/challan/presntation/screens/new_challan_screen.dart';
 import 'package:challan_app/features/challan/presntation/screens/setting.dart';
+import 'package:challan_app/features/seth/presentation/provider/seth_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,6 +10,17 @@ import 'package:intl/intl.dart';
 
 class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
+  Color getIconBg(dynamic c) {
+    if (c.isDelivered) return Colors.blue.shade50;
+    if (c.isReady == 'Ready') return Colors.green.shade50;
+    return Colors.orange.shade50;
+  }
+
+  Color getIconColor(dynamic c) {
+    if (c.isDelivered) return Colors.blue.shade700;
+    if (c.isReady == 'Ready') return Colors.green.shade700;
+    return Colors.orange.shade700;
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -24,7 +36,7 @@ class DashboardScreen extends ConsumerWidget {
         final name = FirebaseAuth.instance.currentUser?.displayName ?? 'U';
         return Scaffold(
           appBar: AppBar(
-            backgroundColor: AppColors.primary.withValues(alpha:0.90),
+            backgroundColor: AppColors.primary.withValues(alpha: 0.90),
             toolbarHeight: 55,
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -55,7 +67,7 @@ class DashboardScreen extends ConsumerWidget {
                       style: TextStyle(
                         color: AppColors.primary,
                         fontWeight: FontWeight.bold,
-                        fontSize: 20
+                        fontSize: 20,
                       ),
                     ),
                   ),
@@ -67,191 +79,99 @@ class DashboardScreen extends ConsumerWidget {
             padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 15),
             child: SingleChildScrollView(
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Welcome Back!',style: TextStyle(
-                    color: Colors.black
-                  ),),
-                  Container(
-                    padding: EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: Colors.black, width: 0.5),
+                  Text(
+                    'Welcome Back!',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              'Today -',
-                              style: TextStyle(
-                                fontSize: 23,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            SizedBox(width: 5),
-                            Text(
-                              today,
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 23,
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 5),
-                        Text(
-                          '$pending challan pending action',
-                          style: TextStyle(color: AppColors.grey),
-                        ),
-                      ],
-                    ),
+                  ),
+                  Text(
+                    "Here's what's happening today.",
+                    style: TextStyle(color: Colors.black, fontSize: 18),
                   ),
                   SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        width: 180,
-                        padding: EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(color: Colors.black, width: 0.5),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Icon(
-                              Icons.receipt_long,
-                              color: Colors.blue,
-                              size: 24,
-                            ),
-                            SizedBox(height: 5),
-                            Text(
-                              total.toString(),
-                              style: TextStyle(
-                                color: Colors.blue,
-                                fontSize: 25,
+                  Consumer(
+                    builder: (context, ref, _) {
+                      final masterAsync = ref.watch(sethProvider);
+                      return masterAsync.when(
+                        data: (masters) {
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Master',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                ),
                               ),
-                            ),
-                            Text(
-                              'Total Challan',
-                              style: TextStyle(
-                                color: AppColors.grey,
-                                fontSize: 15,
+                              SizedBox(height: 10),
+                              ListView.builder(
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                itemCount: masters.length,
+                                itemBuilder: (context, index) {
+                                  final m = masters[index];
+                                  final count = challans
+                                      .where((s) => s.sethid == m.masterId)
+                                      .length;
+                                  return Container(
+                                    margin: EdgeInsets.only(bottom: 10),
+                                    padding: EdgeInsets.all(15),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(20),
+                                      border: Border.all(
+                                        color: Colors.black,
+                                        width: 0.5,
+                                      ),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        CircleAvatar(
+                                          backgroundColor: AppColors.primary
+                                              .withValues(alpha: 0.15),
+                                          child: Text(
+                                            m.masterName[0].toUpperCase(),
+                                            style: TextStyle(
+                                              color: AppColors.primary,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(width: 12),
+                                        Expanded(
+                                          child: Text(
+                                            m.masterName,
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                        ),
+                                        Text(
+                                          '$count challans',
+                                          style: TextStyle(
+                                            color: AppColors.grey,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
                               ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        width: 180,
-                        padding: EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(color: Colors.black, width: 0.5),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Icon(
-                              Icons.pending_actions,
-                              color: Colors.red,
-                              size: 24,
-                            ),
-                            SizedBox(height: 5),
-                            Text(
-                              pending.toString(),
-                              style: TextStyle(color: Colors.red, fontSize: 25),
-                            ),
-                            Text(
-                              'pending',
-                              style: TextStyle(
-                                color: AppColors.grey,
-                                fontSize: 15,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        width: 180,
-                        padding: EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(color: Colors.black, width: 0.5),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Icon(
-                              Icons.check_circle_outline,
-                              color: Colors.green,
-                              size: 24,
-                            ),
-                            SizedBox(height: 5),
-                            Text(
-                              completed.toString(),
-                              style: TextStyle(
-                                color: Colors.green,
-                                fontSize: 25,
-                              ),
-                            ),
-                            Text(
-                              'Delivered',
-                              style: TextStyle(
-                                color: AppColors.grey,
-                                fontSize: 15,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        width: 180,
-                        padding: EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(color: Colors.black, width: 0.5),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Icon(
-                              Icons.layers_outlined,
-                              color: Colors.purple,
-                              size: 24,
-                            ),
-                            SizedBox(height: 5),
-                            Text(
-                              totalPiece.toString(),
-                              style: TextStyle(
-                                color: Colors.purple,
-                                fontSize: 25,
-                              ),
-                            ),
-                            Text(
-                              'Total pieces',
-                              style: TextStyle(
-                                color: AppColors.grey,
-                                fontSize: 15,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                            ],
+                          );
+                        },
+                        error: (e, st) => Text('Error $e'),
+                        loading: () =>
+                            Center(child: CircularProgressIndicator()),
+                      );
+                    },
                   ),
                   SizedBox(height: 10),
                   Row(
@@ -280,9 +200,22 @@ class DashboardScreen extends ConsumerWidget {
                           border: Border.all(color: Colors.black, width: 1),
                         ),
                         child: ListTile(
-                          title: Text('Challan ${recent[index].challanNo}'),
+                          title: Text('Challan ${recent[index].challanNo}',style: TextStyle(fontWeight: FontWeight.bold),),
+                          leading: Container(
+                            width: 42,
+                            height: 42,
+
+                            decoration: BoxDecoration(
+                              color: getIconBg(recent[index]),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Icon(
+                              Icons.checkroom,
+                              color: getIconColor(recent[index]),
+                            ),
+                          ),
                           subtitle: Text(
-                            '${recent[index].classification} - ${recent[index].totalPiece}',
+                            recent[index].classification,
                           ),
                           trailing: Container(
                             padding: EdgeInsets.symmetric(
@@ -317,28 +250,19 @@ class DashboardScreen extends ConsumerWidget {
                       );
                     },
                   ),
-                  SizedBox(height: 10),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      fixedSize: Size(360, 55),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadiusGeometry.circular(20),
-                      ),
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => NewChallanScreen()),
-                      );
-                    },
-                    child: Text(
-                      '+ New challan',
-                      style: TextStyle(fontSize: 20),
-                    ),
-                  ),
                 ],
               ),
             ),
+          ),
+          floatingActionButton: FloatingActionButton(
+            backgroundColor: AppColors.primary,
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => NewChallanScreen()),
+              );
+            },
+            child: Icon(Icons.add),
           ),
         );
       },
