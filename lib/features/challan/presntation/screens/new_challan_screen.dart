@@ -27,6 +27,7 @@ class _NewChallanScreenState extends ConsumerState<NewChallanScreen> {
   String? selectedMasterId;
   String? selectedMasterName;
   bool isReady = false;
+
   TextEditingController challannoProvider = TextEditingController();
   TextEditingController workerNameController = TextEditingController();
   TextEditingController materialController = TextEditingController();
@@ -148,7 +149,13 @@ class _NewChallanScreenState extends ConsumerState<NewChallanScreen> {
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(30),
-                  border: Border.all(color: Colors.black, width: 0.5),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.1),
+                      blurRadius: 8,
+                      offset: Offset(0, 3),
+                    ),
+                  ],
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -187,7 +194,13 @@ class _NewChallanScreenState extends ConsumerState<NewChallanScreen> {
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(30),
-                  border: Border.all(color: Colors.black, width: 0.5),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.1),
+                      blurRadius: 8,
+                      offset: Offset(0, 3),
+                    ),
+                  ],
                 ),
                 child: workerAsync.when(
                   data: (worker) => DropdownButtonFormField<String>(
@@ -216,13 +229,56 @@ class _NewChallanScreenState extends ConsumerState<NewChallanScreen> {
                 ),
               ),
               SizedBox(height: 10),
-
+              Container(
+                padding: EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(30),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.1),
+                      blurRadius: 8,
+                      offset: Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: sethAsync.when(
+                  data: (master) {
+                    return DropdownButtonFormField<String>(
+                      initialValue: selectedMasterId,
+                      hint: Text('Select Master'),
+                      decoration: InputDecoration(border: InputBorder.none),
+                      items: master
+                          .map(
+                            (m) => DropdownMenuItem(
+                              value: m.masterId,
+                              child: Text( m.masterName),
+                            ),
+                          )
+                          .toList(),
+                          onChanged: (value) => setState(() {
+                            selectedMasterId=value;
+                            selectedMasterName=master.firstWhere((m)=>m.masterId==value).masterName;
+                          }),
+                    );
+                  },
+                  error: (e, st) => Text('error $e'),
+                  loading: () => Center(child: CircularProgressIndicator()),
+                ),
+              ),
+              SizedBox(height: 10),
               Container(
                 padding: EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(30),
-                  border: Border.all(color: Colors.black, width: 0.5),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.1),
+                      blurRadius: 8,
+                      offset: Offset(0, 3),
+                    ),
+                  ],
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -312,7 +368,13 @@ class _NewChallanScreenState extends ConsumerState<NewChallanScreen> {
                   padding: EdgeInsets.all(15),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    border: Border.all(color: Colors.black, width: 0.5),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.1),
+                        blurRadius: 8,
+                        offset: Offset(0, 3),
+                      ),
+                    ],
                     borderRadius: BorderRadius.circular(30),
                   ),
                   child: Column(
@@ -390,7 +452,13 @@ class _NewChallanScreenState extends ConsumerState<NewChallanScreen> {
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(30),
-                  border: Border.all(color: Colors.black, width: 0.5),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.1),
+                      blurRadius: 8,
+                      offset: Offset(0, 3),
+                    ),
+                  ],
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -423,7 +491,13 @@ class _NewChallanScreenState extends ConsumerState<NewChallanScreen> {
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(30),
-                  border: Border.all(color: Colors.black, width: 0.5),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.1),
+                      blurRadius: 8,
+                      offset: Offset(0, 3),
+                    ),
+                  ],
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -463,7 +537,13 @@ class _NewChallanScreenState extends ConsumerState<NewChallanScreen> {
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(30),
-                  border: Border.all(color: Colors.black, width: 0.5),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.1),
+                      blurRadius: 8,
+                      offset: Offset(0, 3),
+                    ),
+                  ],
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -538,7 +618,13 @@ class _NewChallanScreenState extends ConsumerState<NewChallanScreen> {
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(30),
-                  border: Border.all(color: Colors.black, width: 0.5),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.1),
+                      blurRadius: 8,
+                      offset: Offset(0, 3),
+                    ),
+                  ],
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -577,7 +663,13 @@ class _NewChallanScreenState extends ConsumerState<NewChallanScreen> {
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(30),
-                  border: Border.all(color: Colors.black, width: 0.5),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.1),
+                      blurRadius: 8,
+                      offset: Offset(0, 3),
+                    ),
+                  ],
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

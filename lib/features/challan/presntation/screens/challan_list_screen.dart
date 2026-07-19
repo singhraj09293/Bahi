@@ -143,7 +143,13 @@ class _ChallanListScreenState extends ConsumerState<ChallanListScreen> {
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: Colors.black, width: 0.5),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.1),
+                        blurRadius: 8,
+                        offset: Offset(0, 3),
+                      ),
+                    ],
                   ),
                   child: TextField(
                     controller: search,
@@ -178,7 +184,13 @@ class _ChallanListScreenState extends ConsumerState<ChallanListScreen> {
                               ? AppColors.primary
                               : Colors.white,
                           borderRadius: BorderRadius.circular(30),
-                          border: Border.all(color: Colors.black, width: 0.5),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.1),
+                              blurRadius: 8,
+                              offset: Offset(0, 3),
+                            ),
+                          ],
                         ),
                         child: Text(
                           'All',
@@ -204,7 +216,13 @@ class _ChallanListScreenState extends ConsumerState<ChallanListScreen> {
                               ? AppColors.primary
                               : Colors.white,
                           borderRadius: BorderRadius.circular(30),
-                          border: Border.all(color: Colors.black, width: 0.5),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.1),
+                              blurRadius: 8,
+                              offset: Offset(0, 3),
+                            ),
+                          ],
                         ),
                         child: Text(
                           'Pending',
@@ -230,7 +248,13 @@ class _ChallanListScreenState extends ConsumerState<ChallanListScreen> {
                               ? AppColors.primary
                               : Colors.white,
                           borderRadius: BorderRadius.circular(30),
-                          border: Border.all(color: Colors.black, width: 0.5),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.1),
+                              blurRadius: 8,
+                              offset: Offset(0, 3),
+                            ),
+                          ],
                         ),
                         child: Text(
                           'Ready',
@@ -256,7 +280,13 @@ class _ChallanListScreenState extends ConsumerState<ChallanListScreen> {
                               ? AppColors.primary
                               : Colors.white,
                           borderRadius: BorderRadius.circular(30),
-                          border: Border.all(color: Colors.black, width: 0.5),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.1),
+                              blurRadius: 8,
+                              offset: Offset(0, 3),
+                            ),
+                          ],
                         ),
                         child: Text(
                           'Delivered',
@@ -293,7 +323,13 @@ class _ChallanListScreenState extends ConsumerState<ChallanListScreen> {
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(30),
-                              border: Border.all(color: Colors.black, width: 1),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.1),
+                                  blurRadius: 8,
+                                  offset: Offset(0, 3),
+                                ),
+                              ],
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,

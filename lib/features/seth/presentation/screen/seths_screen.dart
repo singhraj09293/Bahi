@@ -53,14 +53,16 @@ class _SethsScreenState extends ConsumerState<SethsScreen> {
                           ),
                           child: Container(
                             padding: EdgeInsets.all(20),
-
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(20),
-                              border: Border.all(
-                                color: Colors.black,
-                                width: 0.5,
-                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.1),
+                                  blurRadius: 8,
+                                  offset: Offset(0, 3),
+                                ),
+                              ],
                             ),
                             child: Row(
                               children: [

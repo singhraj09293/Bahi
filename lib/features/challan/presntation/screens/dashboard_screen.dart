@@ -91,7 +91,7 @@ class DashboardScreen extends ConsumerWidget {
                   ),
                   Text(
                     "Here's what's happening today.",
-                    style: TextStyle(color: Colors.black, fontSize: 18),
+                    style: TextStyle(fontSize: 15),
                   ),
                   SizedBox(height: 20),
                   Consumer(
@@ -121,29 +121,45 @@ class DashboardScreen extends ConsumerWidget {
                                       .length;
                                   return Container(
                                     margin: EdgeInsets.only(bottom: 10),
-                                    padding: EdgeInsets.all(15),
+                                    padding: EdgeInsets.all(20),
                                     decoration: BoxDecoration(
                                       color: Colors.white,
-                                      borderRadius: BorderRadius.circular(20),
-                                      border: Border.all(
-                                        color: Colors.black,
-                                        width: 0.5,
-                                      ),
+                                      borderRadius: BorderRadius.circular(15),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withValues(
+                                            alpha: 0.1,
+                                          ),
+                                          blurRadius: 8,
+                                          offset: Offset(0, 3),
+                                        ),
+                                      ],
                                     ),
                                     child: Row(
                                       children: [
-                                        CircleAvatar(
-                                          backgroundColor: AppColors.primary
-                                              .withValues(alpha: 0.15),
+                                        Container(
+                                          height: 42,
+                                          width: 42,
+                                          alignment: Alignment.center,
+                                          margin: EdgeInsets.only(right: 20),
+                                          decoration: BoxDecoration(
+                                            color: AppColors.primary.withValues(
+                                              alpha: 0.15,
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              15,
+                                            ),
+                                          ),
                                           child: Text(
                                             m.masterName[0].toUpperCase(),
                                             style: TextStyle(
                                               color: AppColors.primary,
                                               fontWeight: FontWeight.bold,
+                                              fontSize: 20,
                                             ),
                                           ),
                                         ),
-                                        SizedBox(width: 12),
+                                        SizedBox(width: 10),
                                         Expanded(
                                           child: Text(
                                             m.masterName,
@@ -197,10 +213,19 @@ class DashboardScreen extends ConsumerWidget {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
                           color: Colors.white,
-                          border: Border.all(color: Colors.black, width: 1),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.1),
+                              blurRadius: 8,
+                              offset: Offset(0, 3),
+                            ),
+                          ],
                         ),
                         child: ListTile(
-                          title: Text('Challan ${recent[index].challanNo}',style: TextStyle(fontWeight: FontWeight.bold),),
+                          title: Text(
+                            'Challan ${recent[index].challanNo}',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
                           leading: Container(
                             width: 42,
                             height: 42,
@@ -214,9 +239,7 @@ class DashboardScreen extends ConsumerWidget {
                               color: getIconColor(recent[index]),
                             ),
                           ),
-                          subtitle: Text(
-                            recent[index].classification,
-                          ),
+                          subtitle: Text(recent[index].classification),
                           trailing: Container(
                             padding: EdgeInsets.symmetric(
                               horizontal: 8,
