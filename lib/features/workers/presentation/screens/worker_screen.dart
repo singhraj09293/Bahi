@@ -151,71 +151,70 @@ class _WorkerScreenState extends ConsumerState<WorkerScreen> {
                     },
                   ),
                 ),
-                Positioned(
-                  bottom: 20,
-                  right: 20,
-                  child: FloatingActionButton.extended(
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (_) => StatefulBuilder(
-                          builder: (context, setDialogState) => AlertDialog(
-                            title: Text('Add Worker'),
-                            content: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                TextField(
-                                  controller: workerName,
-                                  decoration: InputDecoration(
-                                    hintText: 'Worker Name',
-                                    border: InputBorder.none,
-                                  ),
-                                ),
-                                SizedBox(height: 10),
-                                TextField(
-                                  controller: workerType,
-                                  decoration: InputDecoration(
-                                    hintText: 'Worker Role (optional)',
-                                    border: InputBorder.none,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.pop(context),
-                                child: Text('Cancel'),
-                              ),
-                              TextButton(
-                                onPressed: () async {
-                                  await ref
-                                      .read(workerRepositoryProvider)
-                                      .addWorker(
-                                        WorkerModel(
-                                          workerId: DateTime.now()
-                                              .millisecondsSinceEpoch
-                                              .toString(),
-                                          workerName: workerName.text.trim(),
-                                          workerType:
-                                              workerType.text.trim().isEmpty
-                                              ? 'General'
-                                              : workerType.text.trim(),
-                                        ),
-                                      );
-                                  Navigator.pop(context);
-                                },
-                                child: Text('Save'),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                    label: Text('Add Worker'),
-                    icon: Icon(Icons.add),
-                  ),
-                ),
               ],
+            ),
+            Positioned(
+              bottom: 20,
+              right: 20,
+              child: FloatingActionButton.extended(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (_) => StatefulBuilder(
+                      builder: (context, setDialogState) => AlertDialog(
+                        title: Text('Add Worker'),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            TextField(
+                              controller: workerName,
+                              decoration: InputDecoration(
+                                hintText: 'Worker Name',
+                                border: InputBorder.none,
+                              ),
+                            ),
+                            SizedBox(height: 10),
+                            TextField(
+                              controller: workerType,
+                              decoration: InputDecoration(
+                                hintText: 'Worker Role (optional)',
+                                border: InputBorder.none,
+                              ),
+                            ),
+                          ],
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: Text('Cancel'),
+                          ),
+                          TextButton(
+                            onPressed: () async {
+                              await ref
+                                  .read(workerRepositoryProvider)
+                                  .addWorker(
+                                    WorkerModel(
+                                      workerId: DateTime.now()
+                                          .millisecondsSinceEpoch
+                                          .toString(),
+                                      workerName: workerName.text.trim(),
+                                      workerType: workerType.text.trim().isEmpty
+                                          ? 'General'
+                                          : workerType.text.trim(),
+                                    ),
+                                  );
+                              Navigator.pop(context);
+                            },
+                            child: Text('Save'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+                label: Text('Add Worker'),
+                icon: Icon(Icons.add),
+              ),
             ),
           ],
         );

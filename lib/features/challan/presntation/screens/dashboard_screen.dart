@@ -1,8 +1,10 @@
 import 'package:challan_app/core/theme/app_theme.dart';
 import 'package:challan_app/features/challan/presntation/provider/challan_provider.dart';
+import 'package:challan_app/features/challan/presntation/screens/detail_challan.dart';
 import 'package:challan_app/features/challan/presntation/screens/new_challan_screen.dart';
 import 'package:challan_app/features/challan/presntation/screens/setting.dart';
 import 'package:challan_app/features/seth/presentation/provider/seth_provider.dart';
+import 'package:challan_app/features/seth/presentation/screen/seth_detail.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -37,7 +39,7 @@ class DashboardScreen extends ConsumerWidget {
         return Scaffold(
           appBar: AppBar(
             backgroundColor: AppColors.primary.withValues(alpha: 0.90),
-            toolbarHeight: 55,
+            toolbarHeight: 60,
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -61,6 +63,7 @@ class DashboardScreen extends ConsumerWidget {
                     );
                   },
                   child: CircleAvatar(
+                    radius: 20,
                     backgroundColor: Colors.white,
                     child: Text(
                       name[0].toUpperCase(),
@@ -119,63 +122,69 @@ class DashboardScreen extends ConsumerWidget {
                                   final count = challans
                                       .where((s) => s.sethid == m.masterId)
                                       .length;
-                                  return Container(
-                                    margin: EdgeInsets.only(bottom: 10),
-                                    padding: EdgeInsets.all(20),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(15),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withValues(
-                                            alpha: 0.1,
-                                          ),
-                                          blurRadius: 8,
-                                          offset: Offset(0, 3),
-                                        ),
-                                      ],
+                                  return GestureDetector(
+                                    onTap: () => Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => SethDetail(seth: m),
+                                      ),
                                     ),
-                                    child: Row(
-                                      children: [
-                                        Container(
-                                          height: 42,
-                                          width: 42,
-                                          alignment: Alignment.center,
-                                          margin: EdgeInsets.only(right: 20),
-                                          decoration: BoxDecoration(
-                                            color: AppColors.primary.withValues(
-                                              alpha: 0.15,
+                                    child: Container(
+                                      margin: EdgeInsets.only(bottom: 10),
+                                      padding: EdgeInsets.all(20),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(15),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black.withValues(
+                                              alpha: 0.1,
                                             ),
-                                            borderRadius: BorderRadius.circular(
-                                              15,
+                                            blurRadius: 8,
+                                            offset: Offset(0, 3),
+                                          ),
+                                        ],
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                            height: 42,
+                                            width: 42,
+                                            alignment: Alignment.center,
+                                            margin: EdgeInsets.only(right: 20),
+                                            decoration: BoxDecoration(
+                                              color: AppColors.primary
+                                                  .withValues(alpha: 0.15),
+                                              borderRadius:
+                                                  BorderRadius.circular(15),
+                                            ),
+                                            child: Text(
+                                              m.masterName[0].toUpperCase(),
+                                              style: TextStyle(
+                                                color: AppColors.primary,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 20,
+                                              ),
                                             ),
                                           ),
-                                          child: Text(
-                                            m.masterName[0].toUpperCase(),
+                                          SizedBox(width: 10),
+                                          Expanded(
+                                            child: Text(
+                                              m.masterName,
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                          ),
+                                          Text(
+                                            '$count challans',
                                             style: TextStyle(
-                                              color: AppColors.primary,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 20,
+                                              color: AppColors.grey,
                                             ),
                                           ),
-                                        ),
-                                        SizedBox(width: 10),
-                                        Expanded(
-                                          child: Text(
-                                            m.masterName,
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16,
-                                            ),
-                                          ),
-                                        ),
-                                        Text(
-                                          '$count challans',
-                                          style: TextStyle(
-                                            color: AppColors.grey,
-                                          ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   );
                                 },
@@ -208,64 +217,73 @@ class DashboardScreen extends ConsumerWidget {
                     itemCount: recent.length,
                     physics: NeverScrollableScrollPhysics(),
                     itemBuilder: (context, index) {
-                      return Container(
-                        margin: EdgeInsets.only(bottom: 10),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: Colors.white,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.1),
-                              blurRadius: 8,
-                              offset: Offset(0, 3),
-                            ),
-                          ],
+                      return GestureDetector(
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                DetailChallan(challan: recent[index]),
+                          ),
                         ),
-                        child: ListTile(
-                          title: Text(
-                            'Challan ${recent[index].challanNo}',
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                        child: Container(
+                          margin: EdgeInsets.only(bottom: 10),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.1),
+                                blurRadius: 8,
+                                offset: Offset(0, 3),
+                              ),
+                            ],
                           ),
-                          leading: Container(
-                            width: 42,
-                            height: 42,
+                          child: ListTile(
+                            title: Text(
+                              'Challan ${recent[index].challanNo}',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            leading: Container(
+                              width: 42,
+                              height: 42,
 
-                            decoration: BoxDecoration(
-                              color: getIconBg(recent[index]),
-                              borderRadius: BorderRadius.circular(20),
+                              decoration: BoxDecoration(
+                                color: getIconBg(recent[index]),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Icon(
+                                Icons.checkroom,
+                                color: getIconColor(recent[index]),
+                              ),
                             ),
-                            child: Icon(
-                              Icons.checkroom,
-                              color: getIconColor(recent[index]),
-                            ),
-                          ),
-                          subtitle: Text(recent[index].classification),
-                          trailing: Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 4,
-                            ),
-                            decoration: BoxDecoration(
-                              color: recent[index].isDelivered
-                                  ? Colors.blue.shade50
-                                  : recent[index].isReady == 'Pending'
-                                  ? Colors.orange.shade50
-                                  : Colors.green.shade50,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Text(
-                              recent[index].isDelivered
-                                  ? 'Delivered'
-                                  : recent[index].isReady == 'Pending'
-                                  ? 'Pending'
-                                  : 'Ready',
-                              style: TextStyle(
-                                fontSize: 11,
+                            subtitle: Text(recent[index].classification),
+                            trailing: Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 4,
+                              ),
+                              decoration: BoxDecoration(
                                 color: recent[index].isDelivered
-                                    ? Colors.blue.shade700
+                                    ? Colors.blue.shade50
                                     : recent[index].isReady == 'Pending'
-                                    ? Colors.orange.shade700
-                                    : Colors.green.shade700,
+                                    ? Colors.orange.shade50
+                                    : Colors.green.shade50,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Text(
+                                recent[index].isDelivered
+                                    ? 'Delivered'
+                                    : recent[index].isReady == 'Pending'
+                                    ? 'Pending'
+                                    : 'Ready',
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  color: recent[index].isDelivered
+                                      ? Colors.blue.shade700
+                                      : recent[index].isReady == 'Pending'
+                                      ? Colors.orange.shade700
+                                      : Colors.green.shade700,
+                                ),
                               ),
                             ),
                           ),
