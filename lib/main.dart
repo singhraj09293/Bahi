@@ -1,5 +1,6 @@
 import 'package:challan_app/core/theme/app_theme.dart';
 import 'package:challan_app/features/auth/presentation/screens/wrapper.dart';
+import 'package:challan_app/features/challan/presntation/screens/splash_screen..dart';
 import 'package:challan_app/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +24,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       theme: AppTheme.theme,
       debugShowCheckedModeBanner: false,
-      home: Wrapper(),
+      home: SplashScreen(),
     );
   }
 }
