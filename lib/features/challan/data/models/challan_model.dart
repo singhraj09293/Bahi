@@ -19,7 +19,9 @@ class ChallanModel extends Challan {
     super.lotCameDate,
     super.afterComingDate,
     required super.garmentTypes,
-    required super.sethid,
+    required super.sethName,
+    required super.design,
+    required super.designer,
   });
 
   ChallanModel copyWith({
@@ -36,7 +38,9 @@ class ChallanModel extends Challan {
     DateTime? lotCameDate,
     DateTime? afterComingDate,
     List<String>? garmentTypes,
-    String? sethid,
+    String? sethName,
+    String? design,
+    String? designer,
   }) {
     return ChallanModel(
       challanNo: challanNo ?? this.challanNo,
@@ -52,7 +56,9 @@ class ChallanModel extends Challan {
       lotCameDate: lotCameDate ?? this.lotCameDate,
       afterComingDate: afterComingDate ?? this.afterComingDate,
       garmentTypes: garmentTypes ?? this.garmentTypes,
-      sethid: sethid ?? this.sethid,
+      sethName: sethName ?? this.sethName,
+      design: design ?? this.design,
+      designer: designer ?? this.designer,
     );
   }
 
@@ -79,7 +85,9 @@ class ChallanModel extends Challan {
       'lotCameDate': lotCameDate?.millisecondsSinceEpoch,
       'afterComingDate': afterComingDate?.millisecondsSinceEpoch,
       'garmentTypes': garmentTypes,
-      'sethid' : sethid,
+      'sethName': sethName,
+      'design': design,
+      'designer': designer,
     };
   }
 
@@ -106,7 +114,9 @@ class ChallanModel extends Challan {
           ? DateTime.fromMillisecondsSinceEpoch(map['afterComingDate'])
           : null,
       garmentTypes: List<String>.from(map['garmentTypes'] ?? []),
-      sethid: map['sethid'] as String? ?? '',
+      sethName: map['sethName'] as String? ?? '',
+      design: map['design'] as String? ?? '',
+      designer: map['designer'] as String? ?? '',
     );
   }
 

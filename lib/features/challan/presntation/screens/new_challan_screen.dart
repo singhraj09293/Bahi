@@ -2,7 +2,6 @@ import 'package:challan_app/core/theme/app_theme.dart';
 import 'package:challan_app/features/challan/data/models/challan_item.dart';
 import 'package:challan_app/features/challan/data/models/challan_model.dart';
 import 'package:challan_app/features/challan/presntation/provider/challan_provider.dart';
-import 'package:challan_app/features/seth/presentation/provider/seth_provider.dart';
 import 'package:challan_app/features/workers/presentation/provider/worker_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -24,8 +23,7 @@ class _NewChallanScreenState extends ConsumerState<NewChallanScreen> {
   String? selectedWorkerId;
   String? selectedWorkerName;
   List<ChallanItem> items = [];
-  String? selectedMasterId;
-  String? selectedMasterName;
+  TextEditingController selectedMasterName = TextEditingController();
   bool isReady = false;
 
   TextEditingController challannoProvider = TextEditingController();
@@ -34,6 +32,8 @@ class _NewChallanScreenState extends ConsumerState<NewChallanScreen> {
   TextEditingController qtyController = TextEditingController();
   TextEditingController rateController = TextEditingController();
   TextEditingController classificationController = TextEditingController();
+  TextEditingController design = TextEditingController();
+  TextEditingController designer = TextEditingController();
   final List<Color> itemColors = [
     AppColors.primary.withValues(alpha: 0.1),
     Colors.green.withValues(alpha: 0.1),
@@ -60,14 +60,16 @@ class _NewChallanScreenState extends ConsumerState<NewChallanScreen> {
     super.dispose();
     challannoProvider.dispose();
     workerNameController.dispose();
-
+    selectedMasterName.dispose();
     classificationController.dispose();
+    design.dispose();
+    designer.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final workerAsync = ref.watch(workerProvider);
-    final sethAsync = ref.watch(sethProvider);
+   
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 65,
@@ -98,7 +100,9 @@ class _NewChallanScreenState extends ConsumerState<NewChallanScreen> {
           TextButton(
             onPressed: () {
               if (challannoProvider.text.isEmpty ||
-                  selectedWorkerName!.isEmpty) {
+                  selectedWorkerName!.isEmpty ||
+                  design.text.isEmpty ||
+                  designer.text.isEmpty) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(
@@ -123,7 +127,9 @@ class _NewChallanScreenState extends ConsumerState<NewChallanScreen> {
                 lotCameDate: lotCameDate,
                 afterComingDate: afterComingDate,
                 garmentTypes: selectedGarments,
-                sethid: selectedMasterId ?? '',
+                sethName: selectedMasterName.text.trim(),
+                design: design.text.trim(),
+                designer: designer.text.trim(),
               );
               ref.read(challanRepositiaryProvider).addChallan(challan);
               Navigator.pop(context);
@@ -174,7 +180,6 @@ class _NewChallanScreenState extends ConsumerState<NewChallanScreen> {
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
                               hintText: 'e.g. 1234',
-
                               hintStyle: TextStyle(
                                 fontSize: 20,
                                 color: Colors.grey,
@@ -242,33 +247,18 @@ class _NewChallanScreenState extends ConsumerState<NewChallanScreen> {
                     ),
                   ],
                 ),
-                child: sethAsync.when(
-                  data: (master) {
-                    return DropdownButtonFormField<String>(
-                      initialValue: selectedMasterId,
-                      hint: Text('Select Master'),
-                      decoration: InputDecoration(border: InputBorder.none),
-                      items: master
-                          .map(
-                            (m) => DropdownMenuItem(
-                              value: m.masterId,
-                              child: Text( m.masterName),
-                            ),
-                          )
-                          .toList(),
-                          onChanged: (value) => setState(() {
-                            selectedMasterId=value;
-                            selectedMasterName=master.firstWhere((m)=>m.masterId==value).masterName;
-                          }),
-                    );
-                  },
-                  error: (e, st) => Text('error $e'),
-                  loading: () => Center(child: CircularProgressIndicator()),
+                child: TextField(
+                  controller: selectedMasterName,
+                  decoration: InputDecoration(
+                    hintText: 'Enter Seth Name',
+                    border: InputBorder.none,
+                  ),
                 ),
               ),
               SizedBox(height: 10),
               Container(
-                padding: EdgeInsets.all(12),
+                width: double.infinity,
+                padding: EdgeInsets.all(15),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(30),
@@ -281,171 +271,70 @@ class _NewChallanScreenState extends ConsumerState<NewChallanScreen> {
                   ],
                 ),
                 child: Column(
-                  mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Add Items',
-                      style: TextStyle(fontSize: 18, color: Colors.grey),
+                      'Garment Type',
+                      style: TextStyle(color: Colors.grey, fontSize: 18),
                     ),
-
-                    TextField(
-                      controller: materialController,
-                      decoration: InputDecoration(
-                        hintText: 'Material',
-                        border: InputBorder.none,
-                        isDense: true,
-                        contentPadding: EdgeInsets.symmetric(vertical: 8),
-                      ),
-                    ),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Expanded(
-                          child: TextField(
-                            controller: qtyController,
-                            keyboardType: TextInputType.number,
-                            decoration: InputDecoration(
-                              hintText: 'Qty',
-                              border: InputBorder.none,
-                              isDense: true,
-                              contentPadding: EdgeInsets.symmetric(vertical: 8),
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: TextField(
-                            controller: rateController,
-                            keyboardType: TextInputType.number,
-                            decoration: InputDecoration(
-                              hintText: 'Rate per piece',
-                              border: InputBorder.none,
-                              isDense: true,
-                              contentPadding: EdgeInsets.symmetric(vertical: 8),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            if (rateController.text.isEmpty ||
-                                qtyController.text.isEmpty ||
-                                materialController.text.isEmpty) {
-                              return;
-                            }
+                    Wrap(
+                      spacing: 10,
+                      children: garmentOptions.map((g) {
+                        final selected = selectedGarments.contains(g);
+                        return FilterChip(
+                          label: Text(g),
+                          selected: selected,
+                          selectedColor: AppColors.primary,
+                          onSelected: (val) {
                             setState(() {
-                              items.add(
-                                ChallanItem(
-                                  materialName: materialController.text.trim(),
-                                  quantity: int.parse(
-                                    qtyController.text.trim(),
-                                  ),
-                                  ratePerPiece: double.parse(
-                                    rateController.text.trim(),
-                                  ),
-                                ),
-                              );
-                              materialController.clear();
-                              qtyController.clear();
-                              rateController.clear();
+                              if (val) {
+                                selectedGarments.add(g);
+                              } else {
+                                selectedGarments.remove(g);
+                              }
                             });
                           },
-                          child: Text('+ Add items'),
-                        ),
-                      ],
+                        );
+                      }).toList(),
                     ),
                   ],
                 ),
               ),
               SizedBox(height: 10),
-              if (items.isNotEmpty)
-                Container(
-                  padding: EdgeInsets.all(15),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.1),
-                        blurRadius: 8,
-                        offset: Offset(0, 3),
-                      ),
-                    ],
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Items',
-                        style: TextStyle(color: Colors.grey, fontSize: 18),
-                      ),
-                      SizedBox(height: 10),
-                      for (int i = 0; i < items.length; i++)
-                        Container(
-                          margin: EdgeInsets.only(bottom: 8),
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 10,
-                          ),
-                          decoration: BoxDecoration(
-                            color: itemColors[i % itemColors.length],
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                flex: 2,
-                                child: Text(items[i].materialName),
-                              ),
-                              Expanded(
-                                flex: 2,
-                                child: Text(
-                                  '${items[i].quantity} x ${items[i].ratePerPiece}',
-                                ),
-                              ),
-                              Expanded(
-                                child: Text(
-                                  '₹${items[i].subtotal}',
-                                  textAlign: TextAlign.right,
-                                ),
-                              ),
-
-                              IconButton(
-                                icon: Icon(
-                                  Icons.close,
-                                  color: Colors.red,
-                                  size: 23,
-                                ),
-                                padding: EdgeInsets.zero,
-                                constraints: BoxConstraints(),
-                                onPressed: () =>
-                                    setState(() => items.removeAt(i)),
-                              ),
-                            ],
-                          ),
-                        ),
-                      Divider(),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Total',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            '${getTotalPieces()} pcs · ₹${getTotalAmount()}',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(30),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.1),
+                      blurRadius: 8,
+                      offset: Offset(0, 3),
+                    ),
+                  ],
                 ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TextField(
+                      controller: design,
+                      decoration: InputDecoration(
+                        hintText: 'Design type',
+                        border: InputBorder.none
+                      ),
+                    ),
+                    SizedBox(height: 5,),
+                     TextField(
+                      controller: designer,
+                      decoration: InputDecoration(
+                        hintText: 'Designer Name',
+                        border: InputBorder.none
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               SizedBox(height: 10),
               Container(
                 padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
@@ -576,82 +465,6 @@ class _NewChallanScreenState extends ConsumerState<NewChallanScreen> {
                           ),
                         ],
                       ),
-                    ),
-                    Divider(),
-                    GestureDetector(
-                      onTap: () async {
-                        final date = await showDatePicker(
-                          context: context,
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime(2024),
-                          lastDate: DateTime(2030),
-                        );
-                        if (date != null)
-                          setState(() => afterComingDate = date);
-                      },
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.calendar_today_outlined,
-                            color: AppColors.primary,
-                          ),
-                          SizedBox(width: 10),
-                          Text('After Coming Date'),
-                          Spacer(),
-                          Text(
-                            afterComingDate == null
-                                ? 'Select'
-                                : DateFormat(
-                                    'dd MMM yyyy',
-                                  ).format(afterComingDate!),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 10),
-              Container(
-                width: double.infinity,
-                padding: EdgeInsets.all(15),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(30),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.1),
-                      blurRadius: 8,
-                      offset: Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Garment Type',
-                      style: TextStyle(color: Colors.grey, fontSize: 18),
-                    ),
-                    Wrap(
-                      spacing: 10,
-                      children: garmentOptions.map((g) {
-                        final selected = selectedGarments.contains(g);
-                        return FilterChip(
-                          label: Text(g),
-                          selected: selected,
-                          selectedColor: AppColors.primary,
-                          onSelected: (val) {
-                            setState(() {
-                              if (val) {
-                                selectedGarments.add(g);
-                              } else {
-                                selectedGarments.remove(g);
-                              }
-                            });
-                          },
-                        );
-                      }).toList(),
                     ),
                   ],
                 ),

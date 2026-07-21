@@ -14,7 +14,9 @@ class Challan {
   final DateTime? lotCameDate;
   final DateTime? afterComingDate;
   final List<String> garmentTypes;
-  final String sethid;
+  final String sethName;
+  final String design;
+  final String designer;
 
   const Challan({
     required this.challanNo,
@@ -30,6 +32,8 @@ class Challan {
     this.lotCameDate,
     this.afterComingDate,
     required this.garmentTypes,
-     required this.sethid,
+    required this.sethName,
+    required this.design, 
+    required this.designer,
   });
 }
