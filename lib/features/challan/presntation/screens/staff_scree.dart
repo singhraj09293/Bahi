@@ -1,5 +1,5 @@
 import 'package:challan_app/core/theme/app_theme.dart';
-import 'package:challan_app/features/seth/presentation/screen/seths_screen.dart';
+
 import 'package:challan_app/features/workers/presentation/screens/worker_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -68,7 +68,7 @@ class _StaffScreeState extends State<StaffScree> {
               ],
             ),
           ),
-          Expanded(child: showWorkers ? WorkerScreen() : SethsScreen()),
+          Expanded(child: WorkerScreen()),
         ],
       ),
     );

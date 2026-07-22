@@ -3,8 +3,6 @@ import 'package:challan_app/features/challan/presntation/provider/challan_provid
 import 'package:challan_app/features/challan/presntation/screens/detail_challan.dart';
 import 'package:challan_app/features/challan/presntation/screens/new_challan_screen.dart';
 import 'package:challan_app/features/challan/presntation/screens/setting.dart';
-import 'package:challan_app/features/seth/presentation/provider/seth_provider.dart';
-import 'package:challan_app/features/seth/presentation/screen/seth_detail.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -34,7 +32,12 @@ class DashboardScreen extends ConsumerWidget {
         int completed = challans.where((c) => c.isDelivered == true).length;
         int totalPiece = challans.fold(0, (sum, c) => sum + c.totalPiece);
         final recent = challans.take(3).toList();
-        String today = DateFormat('dd MMMM yyyy').format(DateTime.now());
+        Map<String, int> masterCounts = {};
+        for (var c in challans) {
+          if (c.sethName.isNotEmpty) {
+            masterCounts[c.sethName] = (masterCounts[c.sethName] ?? 0) + 1;
+          }
+        }
         final name = FirebaseAuth.instance.currentUser?.displayName ?? 'U';
         return Scaffold(
           appBar: AppBar(
@@ -97,104 +100,63 @@ class DashboardScreen extends ConsumerWidget {
                     style: TextStyle(fontSize: 15),
                   ),
                   SizedBox(height: 20),
-                  Consumer(
-                    builder: (context, ref, _) {
-                      final masterAsync = ref.watch(sethProvider);
-                      return masterAsync.when(
-                        data: (masters) {
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                  GridView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      mainAxisSpacing: 10,
+                      crossAxisSpacing: 10,
+                      childAspectRatio: 1.3,
+                    ),
+                    itemCount: masterCounts.length,
+                    itemBuilder: (context, index) {
+                      final name = masterCounts.keys.elementAt(index);
+                      final count = masterCounts.values.elementAt(index);
+                      final List<Color> avatarColors = [
+                        Colors.orange[100]!,
+                        Colors.green[100]!,
+                        Colors.blue[100]!,
+                        Colors.purple[100]!,
+                      ];
+                      final List<Color> textColors = [
+                        Colors.orange.shade800,
+                        Colors.green.shade800,
+                        Colors.blue.shade800,
+                        Colors.purple.shade800,
+                      ];
+                      return Container(
+                        decoration: BoxDecoration(
+                          color: avatarColors[index % avatarColors.length],
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black,
+                              offset: Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: Center(
+                          child: Column(
                             children: [
                               Text(
-                                'Seth',
+                                name,
                                 style: TextStyle(
+                                  color: textColors[index % textColors.length],
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 20,
+                                  fontSize: 16,
                                 ),
                               ),
-                              SizedBox(height: 10),
-                              ListView.builder(
-                                shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
-                                itemCount: masters.length,
-                                itemBuilder: (context, index) {
-                                  final m = masters[index];
-                                  final count = challans
-                                      .where((s) => s.sethid == m.masterId)
-                                      .length;
-                                  return GestureDetector(
-                                    onTap: () => Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (_) => SethDetail(seth: m),
-                                      ),
-                                    ),
-                                    child: Container(
-                                      margin: EdgeInsets.only(bottom: 10),
-                                      padding: EdgeInsets.all(20),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(15),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.black.withValues(
-                                              alpha: 0.1,
-                                            ),
-                                            blurRadius: 8,
-                                            offset: Offset(0, 3),
-                                          ),
-                                        ],
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Container(
-                                            height: 42,
-                                            width: 42,
-                                            alignment: Alignment.center,
-                                            margin: EdgeInsets.only(right: 20),
-                                            decoration: BoxDecoration(
-                                              color: AppColors.primary
-                                                  .withValues(alpha: 0.15),
-                                              borderRadius:
-                                                  BorderRadius.circular(15),
-                                            ),
-                                            child: Text(
-                                              m.masterName[0].toUpperCase(),
-                                              style: TextStyle(
-                                                color: AppColors.primary,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 20,
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(width: 10),
-                                          Expanded(
-                                            child: Text(
-                                              m.masterName,
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 16,
-                                              ),
-                                            ),
-                                          ),
-                                          Text(
-                                            '$count challans',
-                                            style: TextStyle(
-                                              color: AppColors.grey,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                },
+                              Text(
+                                '${count} Lotts',
+                                style: TextStyle(
+                                  color: textColors[index % textColors.length],
+                                  fontSize: 10,
+                                ),
                               ),
                             ],
-                          );
-                        },
-                        error: (e, st) => Text('Error $e'),
-                        loading: () =>
-                            Center(child: CircularProgressIndicator()),
+                          ),
+                        ),
                       );
                     },
                   ),

@@ -1,32 +1,40 @@
+import 'package:challan_app/features/challan/data/models/workers_assignment.dart';
+
 class ChallanItem {
   final String materialName;
   final int quantity;
   final double ratePerPiece;
-  final int completedQuantity;
+  final List<WorkerAssignment> assignments;
 
   ChallanItem({
     required this.materialName,
     required this.quantity,
     required this.ratePerPiece,
-    this.completedQuantity = 0,
+    this.assignments = const [],
   });
 
   double get subtotal => quantity * ratePerPiece;
-  double get earnedAmount => completedQuantity * ratePerPiece;
-  int get remainingQuantity => quantity - completedQuantity;
-  double get remainingAmount => remainingQuantity * ratePerPiece;
+  int get assignedQuantity {
+    int total = 0;
+    for (var a in assignments) {
+      total = total + a.quantity;
+    }
+    return total;
+  }
+
+  int get remainingQuantity => quantity - assignedQuantity;
 
   ChallanItem copyWith({
     String? materialName,
     int? quantity,
     double? ratePerPiece,
-    int? completedQuantity,
+    List<WorkerAssignment>? assignments,
   }) {
     return ChallanItem(
       materialName: materialName ?? this.materialName,
       quantity: quantity ?? this.quantity,
       ratePerPiece: ratePerPiece ?? this.ratePerPiece,
-      completedQuantity: completedQuantity ?? this.completedQuantity,
+      assignments: assignments ?? this.assignments,
     );
   }
 
@@ -34,13 +42,15 @@ class ChallanItem {
     'materialName': materialName,
     'quantity': quantity,
     'ratePerPiece': ratePerPiece,
-    'completedQuantity': completedQuantity,
+    'assignments': assignments.map((a) => a.toMap()).toList(),
   };
 
   factory ChallanItem.fromMap(Map<String, dynamic> map) => ChallanItem(
     materialName: map['materialName'],
     quantity: map['quantity'],
     ratePerPiece: (map['ratePerPiece'] as num).toDouble(),
-    completedQuantity: map['completedQuantity'] ?? 0,
+    assignments: (map['assigments'] as List<dynamic>? ?? [])
+        .map((e) => WorkerAssignment.fromMap(e))
+        .toList(),
   );
 }

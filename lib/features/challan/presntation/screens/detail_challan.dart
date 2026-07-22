@@ -2,7 +2,6 @@ import 'package:challan_app/core/theme/app_theme.dart';
 import 'package:challan_app/features/challan/data/models/challan_item.dart';
 import 'package:challan_app/features/challan/data/models/challan_model.dart';
 import 'package:challan_app/features/challan/presntation/provider/challan_provider.dart';
-import 'package:challan_app/features/seth/presentation/provider/seth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -57,7 +56,7 @@ class _DetailChallanState extends ConsumerState<DetailChallan> {
   @override
   Widget build(BuildContext context) {
     final challanAsync = ref.watch(challanProvider);
-    final masterAysnc = ref.watch(sethProvider);
+
     return challanAsync.when(
       data: (challans) {
         final challan = challans.firstWhere(
@@ -177,24 +176,9 @@ class _DetailChallanState extends ConsumerState<DetailChallan> {
                                 style: TextStyle(color: Colors.grey),
                               ),
                               Spacer(),
-                              masterAysnc.when(
-                                data: (master) {
-                                  final match = master.where(
-                                    (m) => m.masterId == challan.sethid,
-                                  );
-                                  return Text(
-                                    match.isEmpty
-                                        ? '-'
-                                        : match.first.masterName,
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  );
-                                },
-                                error: ((error, stackTrace) =>
-                                    Text('Error $error')),
-                                loading: () => CircularProgressIndicator(),
+                              Text(
+                                challan.sethName,
+                                style: TextStyle(fontWeight: FontWeight.bold),
                               ),
                             ],
                           ),

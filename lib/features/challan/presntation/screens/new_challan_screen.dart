@@ -100,7 +100,7 @@ class _NewChallanScreenState extends ConsumerState<NewChallanScreen> {
           TextButton(
             onPressed: () {
               if (challannoProvider.text.isEmpty ||
-                  selectedWorkerName!.isEmpty ||
+                
                   design.text.isEmpty ||
                   designer.text.isEmpty) {
                 ScaffoldMessenger.of(context).showSnackBar(
