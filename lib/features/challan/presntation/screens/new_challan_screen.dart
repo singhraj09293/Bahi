@@ -193,46 +193,7 @@ class _NewChallanScreenState extends ConsumerState<NewChallanScreen> {
                   ],
                 ),
               ),
-              SizedBox(height: 10),
-              Container(
-                padding: EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(30),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.1),
-                      blurRadius: 8,
-                      offset: Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: workerAsync.when(
-                  data: (worker) => DropdownButtonFormField<String>(
-                    initialValue: selectedWorkerId,
-                    hint: Text('Select Worker'),
-                    decoration: InputDecoration(border: InputBorder.none),
-                    items: worker
-                        .map(
-                          (w) => DropdownMenuItem(
-                            value: w.workerId,
-                            child: Text('${w.workerName}'),
-                          ),
-                        )
-                        .toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        selectedWorkerId = value;
-                        selectedWorkerName = worker
-                            .firstWhere((w) => w.workerId == value)
-                            .workerName;
-                      });
-                    },
-                  ),
-                  error: (e, st) => Text('Error $e'),
-                  loading: () => Center(child: CircularProgressIndicator()),
-                ),
-              ),
+             
               SizedBox(height: 10),
               Container(
                 padding: EdgeInsets.all(20),

@@ -1,5 +1,4 @@
 import 'package:challan_app/core/theme/app_theme.dart';
-import 'package:challan_app/features/challan/data/models/challan_item.dart';
 import 'package:challan_app/features/challan/data/models/challan_model.dart';
 import 'package:challan_app/features/challan/presntation/provider/challan_provider.dart';
 import 'package:flutter/material.dart';
@@ -15,43 +14,8 @@ class DetailChallan extends ConsumerStatefulWidget {
 }
 
 class _DetailChallanState extends ConsumerState<DetailChallan> {
-  void editCompletedQty(int index) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        final controller = TextEditingController(
-          text: widget.challan.items[index].completedQuantity.toString(),
-        );
-        return AlertDialog(
-          title: Text('Update completed qty'),
-          content: TextField(
-            controller: controller,
-            keyboardType: TextInputType.number,
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                int newQty = int.parse(controller.text.trim());
-                List<ChallanItem> updatedItems = List.from(
-                  widget.challan.items,
-                );
-                updatedItems[index] = updatedItems[index].copyWith(
-                  completedQuantity: newQty,
-                );
-                ref
-                    .read(challanRepositiaryProvider)
-                    .updateChallan(
-                      widget.challan.copyWith(items: updatedItems),
-                    );
-                Navigator.pop(context);
-              },
-              child: Text('Save'),
-            ),
-          ],
-        );
-      },
-    );
-  }
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -230,40 +194,37 @@ class _DetailChallanState extends ConsumerState<DetailChallan> {
                           for (int i = 0; i < challan.items.length; i++)
                             Padding(
                               padding: const EdgeInsets.only(bottom: 5.0),
-                              child: GestureDetector(
-                                onTap: () => editCompletedQty(i),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Icon(
-                                          Icons.checkroom,
-                                          color: Colors.grey,
-                                        ),
-                                        Text(
-                                          'Material ${i + 1}',
-                                          style: TextStyle(color: Colors.grey),
-                                        ),
-                                        Spacer(),
-                                        Text(
-                                          challan.items[i].materialName,
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    Text(
-                                      '${challan.items[i].completedQuantity}/${widget.challan.items[i].quantity} done',
-                                      style: TextStyle(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        Icons.checkroom,
                                         color: Colors.grey,
-                                        fontSize: 12,
                                       ),
+                                      Text(
+                                        'Material ${i + 1}',
+                                        style: TextStyle(color: Colors.grey),
+                                      ),
+                                      Spacer(),
+                                      Text(
+                                        challan.items[i].materialName,
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Text(
+                                   '',
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 12,
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
                             ),
                           SizedBox(height: 5),
