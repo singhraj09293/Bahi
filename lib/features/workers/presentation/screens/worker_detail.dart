@@ -50,9 +50,7 @@ class _WorkerDetailState extends ConsumerState<WorkerDetail> {
         int completed = workerChallans.where((c) => c.isDelivered).length;
         int piece = workerChallans.fold(0, (sum, c) => sum + c.totalPiece);
         double earning = 0;
-        for (var c in workerChallans) {
-          earning = earning + c.totalAmount;
-        }
+       
         return Scaffold(
           appBar: AppBar(
             title: Column(

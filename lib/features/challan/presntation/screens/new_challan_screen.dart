@@ -17,43 +17,24 @@ class NewChallanScreen extends ConsumerStatefulWidget {
 
 class _NewChallanScreenState extends ConsumerState<NewChallanScreen> {
   DateTime? lotCameDate;
-  DateTime? afterComingDate;
   List<String> selectedGarments = [];
   final List<String> garmentOptions = ['Kurta', 'Pajama', 'Dupatta'];
   String? selectedWorkerId;
   String? selectedWorkerName;
-  List<ChallanItem> items = [];
   TextEditingController selectedMasterName = TextEditingController();
   bool isReady = false;
 
   TextEditingController challannoProvider = TextEditingController();
   TextEditingController workerNameController = TextEditingController();
-  TextEditingController materialController = TextEditingController();
-  TextEditingController qtyController = TextEditingController();
-  TextEditingController rateController = TextEditingController();
   TextEditingController classificationController = TextEditingController();
   TextEditingController design = TextEditingController();
   TextEditingController designer = TextEditingController();
+  TextEditingController totalPiece = TextEditingController();
   final List<Color> itemColors = [
     AppColors.primary.withValues(alpha: 0.1),
     Colors.green.withValues(alpha: 0.1),
     Colors.grey.withValues(alpha: 0.1),
   ];
-  int getTotalPieces() {
-    int total = 0;
-    for (var item in items) {
-      total = total + item.quantity;
-    }
-    return total;
-  }
-
-  double getTotalAmount() {
-    double total = 0;
-    for (var item in items) {
-      total = total + item.subtotal;
-    }
-    return total;
-  }
 
   @override
   void dispose() {
@@ -64,12 +45,11 @@ class _NewChallanScreenState extends ConsumerState<NewChallanScreen> {
     classificationController.dispose();
     design.dispose();
     designer.dispose();
+    totalPiece.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final workerAsync = ref.watch(workerProvider);
-   
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 65,
@@ -100,7 +80,7 @@ class _NewChallanScreenState extends ConsumerState<NewChallanScreen> {
           TextButton(
             onPressed: () {
               if (challannoProvider.text.isEmpty ||
-                
+                  totalPiece.text.isEmpty ||
                   design.text.isEmpty ||
                   designer.text.isEmpty) {
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -118,14 +98,13 @@ class _NewChallanScreenState extends ConsumerState<NewChallanScreen> {
                 challanNo: challannoProvider.text.trim(),
                 date: DateTime.now(),
                 workersNames: selectedWorkerName ?? '',
-                totalPiece: items.fold(0, (s, i) => s + i.quantity),
+                totalPiece: int.parse(totalPiece.text.trim()),
                 classification: classificationController.text.trim(),
                 isReady: isReady ? 'Ready' : 'Pending',
                 isDelivered: false,
                 workerid: selectedWorkerId ?? '',
-                items: items,
                 lotCameDate: lotCameDate,
-                afterComingDate: afterComingDate,
+                assignments: [],
                 garmentTypes: selectedGarments,
                 sethName: selectedMasterName.text.trim(),
                 design: design.text.trim(),
@@ -191,6 +170,29 @@ class _NewChallanScreenState extends ConsumerState<NewChallanScreen> {
                       ],
                     ),
                   ],
+                ),
+              ),
+              SizedBox(height: 10),
+              Container(
+                padding: EdgeInsets.all(15),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(30),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.1),
+                      blurRadius: 8,
+                      offset: Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: TextField(
+                  controller: totalPiece,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    hintText: 'Total Pieces',
+                    border: InputBorder.none,
+                  ),
                 ),
               ),
              
@@ -282,15 +284,15 @@ class _NewChallanScreenState extends ConsumerState<NewChallanScreen> {
                       controller: design,
                       decoration: InputDecoration(
                         hintText: 'Design type',
-                        border: InputBorder.none
+                        border: InputBorder.none,
                       ),
                     ),
-                    SizedBox(height: 5,),
-                     TextField(
+                    SizedBox(height: 5),
+                    TextField(
                       controller: designer,
                       decoration: InputDecoration(
                         hintText: 'Designer Name',
-                        border: InputBorder.none
+                        border: InputBorder.none,
                       ),
                     ),
                   ],

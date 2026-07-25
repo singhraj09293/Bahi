@@ -14,9 +14,6 @@ class DetailChallan extends ConsumerStatefulWidget {
 }
 
 class _DetailChallanState extends ConsumerState<DetailChallan> {
-
-  
-
   @override
   Widget build(BuildContext context) {
     final challanAsync = ref.watch(challanProvider);
@@ -109,26 +106,7 @@ class _DetailChallanState extends ConsumerState<DetailChallan> {
                               ),
                             ],
                           ),
-                          SizedBox(height: 5),
-                          Divider(color: Colors.grey),
-                          SizedBox(height: 5),
-                          Row(
-                            children: [
-                              Icon(Icons.person, color: Colors.grey),
-                              Text(
-                                'Worker',
-                                style: TextStyle(color: Colors.grey),
-                              ),
-                              Spacer(),
-                              Text(
-                                challan.workersNames,
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
+
                           SizedBox(height: 5),
                           Divider(color: Colors.grey),
                           SizedBox(height: 5),
@@ -170,6 +148,46 @@ class _DetailChallanState extends ConsumerState<DetailChallan> {
                           SizedBox(height: 5),
                           Row(
                             children: [
+                              Icon(Icons.brush_outlined, color: Colors.grey),
+                              Text(
+                                'Design Type',
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                              Spacer(),
+                              Text(
+                                challan.design,
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 5),
+                          Divider(color: Colors.grey),
+                          SizedBox(height: 5),
+                          Row(
+                            children: [
+                              Icon(Icons.person_outline, color: Colors.grey),
+                              Text(
+                                'Designer',
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                              Spacer(),
+                              Text(
+                                challan.designer,
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 5),
+                          Divider(color: Colors.grey),
+                          SizedBox(height: 5),
+                          Row(
+                            children: [
                               Icon(
                                 Icons.grid_view_outlined,
                                 color: Colors.grey,
@@ -191,45 +209,7 @@ class _DetailChallanState extends ConsumerState<DetailChallan> {
                           SizedBox(height: 5),
                           Divider(color: Colors.grey),
                           SizedBox(height: 5),
-                          for (int i = 0; i < challan.items.length; i++)
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 5.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Icon(
-                                        Icons.checkroom,
-                                        color: Colors.grey,
-                                      ),
-                                      Text(
-                                        'Material ${i + 1}',
-                                        style: TextStyle(color: Colors.grey),
-                                      ),
-                                      Spacer(),
-                                      Text(
-                                        challan.items[i].materialName,
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Text(
-                                   '',
-                                    style: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          SizedBox(height: 5),
-                          Divider(color: Colors.grey),
-                          SizedBox(height: 5),
+
                           Row(
                             children: [
                               Icon(
@@ -265,11 +245,11 @@ class _DetailChallanState extends ConsumerState<DetailChallan> {
                               ),
                               Spacer(),
                               Text(
-                                widget.challan.lotCameDate == null
+                                challan.lotCameDate == null
                                     ? '-'
                                     : DateFormat(
                                         'dd MMM yyyy',
-                                      ).format(widget.challan.lotCameDate!),
+                                      ).format(challan.lotCameDate!),
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold,
@@ -277,33 +257,7 @@ class _DetailChallanState extends ConsumerState<DetailChallan> {
                               ),
                             ],
                           ),
-                          SizedBox(height: 5),
-                          Divider(color: Colors.grey),
-                          SizedBox(height: 5),
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.calendar_month_outlined,
-                                color: Colors.grey,
-                              ),
-                              Text(
-                                'Work Started',
-                                style: TextStyle(color: Colors.grey),
-                              ),
-                              Spacer(),
-                              Text(
-                                widget.challan.afterComingDate == null
-                                    ? '-'
-                                    : DateFormat(
-                                        'dd MMM yyyy',
-                                      ).format(widget.challan.afterComingDate!),
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
+
                           SizedBox(height: 5),
                           Divider(color: Colors.grey),
                           SizedBox(height: 5),
@@ -319,7 +273,7 @@ class _DetailChallanState extends ConsumerState<DetailChallan> {
                               ),
                               Spacer(),
                               Text(
-                                widget.challan.garmentTypes.join(', '),
+                                challan.garmentTypes.join(', '),
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold,
@@ -331,23 +285,6 @@ class _DetailChallanState extends ConsumerState<DetailChallan> {
                           SizedBox(height: 5),
                           Divider(color: Colors.grey),
                           SizedBox(height: 5),
-                          Row(
-                            children: [
-                              Icon(Icons.currency_rupee, color: Colors.grey),
-                              Text(
-                                'Total',
-                                style: TextStyle(color: Colors.grey),
-                              ),
-                              Spacer(),
-                              Text(
-                                challan.totalAmount.toString(),
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
                         ],
                       ),
                     ),

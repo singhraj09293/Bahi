@@ -1,7 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
-import 'package:challan_app/features/challan/data/models/challan_item.dart';
+import 'package:challan_app/features/challan/data/models/workers_assignment.dart';
 import 'package:challan_app/features/challan/domain/entities/challan_entity.dart';
 
 class ChallanModel extends Challan {
@@ -15,13 +15,12 @@ class ChallanModel extends Challan {
     required super.isDelivered,
     super.deliveryDate,
     required super.workerid,
-    required super.items,
     super.lotCameDate,
-    super.afterComingDate,
     required super.garmentTypes,
     required super.sethName,
     required super.design,
     required super.designer,
+    required super.assignments,
   });
 
   ChallanModel copyWith({
@@ -34,13 +33,12 @@ class ChallanModel extends Challan {
     bool? isDelivered,
     DateTime? deliveryDate,
     String? workerid,
-    List<ChallanItem>? items,
     DateTime? lotCameDate,
-    DateTime? afterComingDate,
     List<String>? garmentTypes,
     String? sethName,
     String? design,
     String? designer,
+    List<WorkerAssignment>? assignments,
   }) {
     return ChallanModel(
       challanNo: challanNo ?? this.challanNo,
@@ -52,22 +50,13 @@ class ChallanModel extends Challan {
       isDelivered: isDelivered ?? this.isDelivered,
       deliveryDate: deliveryDate ?? this.deliveryDate,
       workerid: workerid ?? this.workerid,
-      items: items ?? this.items,
       lotCameDate: lotCameDate ?? this.lotCameDate,
-      afterComingDate: afterComingDate ?? this.afterComingDate,
       garmentTypes: garmentTypes ?? this.garmentTypes,
       sethName: sethName ?? this.sethName,
       design: design ?? this.design,
       designer: designer ?? this.designer,
+      assignments: assignments ?? this.assignments,
     );
-  }
-
-  double get totalAmount {
-    double total = 0;
-    for (var item in items) {
-      total = total + item.subtotal;
-    }
-    return total;
   }
 
   Map<String, dynamic> toMap() {
@@ -81,13 +70,12 @@ class ChallanModel extends Challan {
       'isDelivered': isDelivered,
       'deliveryDate': deliveryDate?.millisecondsSinceEpoch,
       'workerid': workerid,
-      'items': items.map((i) => i.toMap()).toList(),
       'lotCameDate': lotCameDate?.millisecondsSinceEpoch,
-      'afterComingDate': afterComingDate?.millisecondsSinceEpoch,
       'garmentTypes': garmentTypes,
       'sethName': sethName,
       'design': design,
       'designer': designer,
+      'assignments': assignments,
     };
   }
 
@@ -104,19 +92,17 @@ class ChallanModel extends Challan {
       deliveryDate: map['deliveryDate'] != null
           ? DateTime.fromMillisecondsSinceEpoch(map['deliveryDate'] as int)
           : null,
-      items: (map['items'] as List<dynamic>? ?? [])
-          .map((e) => ChallanItem.fromMap(e))
-          .toList(),
+
       lotCameDate: map['lotCameDate'] != null
           ? DateTime.fromMillisecondsSinceEpoch(map['lotCameDate'])
-          : null,
-      afterComingDate: map['afterComingDate'] != null
-          ? DateTime.fromMillisecondsSinceEpoch(map['afterComingDate'])
           : null,
       garmentTypes: List<String>.from(map['garmentTypes'] ?? []),
       sethName: map['sethName'] as String? ?? '',
       design: map['design'] as String? ?? '',
       designer: map['designer'] as String? ?? '',
+      assignments: (map['assignments'] as List<dynamic>? ?? [])
+          .map((e) => WorkerAssignment.fromMap(e))
+          .toList(),
     );
   }
 

@@ -1,4 +1,5 @@
 import 'package:challan_app/features/challan/data/models/challan_item.dart';
+import 'package:challan_app/features/challan/data/models/workers_assignment.dart';
 
 class Challan {
   final String workerid;
@@ -10,13 +11,12 @@ class Challan {
   final String isReady;
   final bool isDelivered;
   final DateTime? deliveryDate;
-  final List<ChallanItem> items;
   final DateTime? lotCameDate;
-  final DateTime? afterComingDate;
   final List<String> garmentTypes;
   final String sethName;
   final String design;
   final String designer;
+  final List<WorkerAssignment> assignments;
 
   const Challan({
     required this.challanNo,
@@ -28,12 +28,11 @@ class Challan {
     required this.isDelivered,
     this.deliveryDate,
     required this.workerid,
-    required this.items,
     this.lotCameDate,
-    this.afterComingDate,
     required this.garmentTypes,
     required this.sethName,
-    required this.design, 
+    required this.design,
     required this.designer,
+     required this.assignments,
   });
 }
