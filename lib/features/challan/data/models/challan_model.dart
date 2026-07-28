@@ -75,7 +75,7 @@ class ChallanModel extends Challan {
       'sethName': sethName,
       'design': design,
       'designer': designer,
-      'assignments': assignments,
+      'assignments': assignments.map((a)=>a.toMap()).toList(),
     };
   }
 

@@ -111,13 +111,6 @@ class _WorkerScreenState extends ConsumerState<WorkerScreen> {
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.center,
                                             children: [
-                                              Text(
-                                                work[index].workerType,
-                                                style: TextStyle(
-                                                  color: Colors.grey,
-                                                  fontSize: 15,
-                                                ),
-                                              ),
                                               Spacer(),
                                               IconButton(
                                                 padding: EdgeInsets.zero,
@@ -198,9 +191,6 @@ class _WorkerScreenState extends ConsumerState<WorkerScreen> {
                                           .millisecondsSinceEpoch
                                           .toString(),
                                       workerName: workerName.text.trim(),
-                                      workerType: workerType.text.trim().isEmpty
-                                          ? 'General'
-                                          : workerType.text.trim(),
                                     ),
                                   );
                               Navigator.pop(context);
