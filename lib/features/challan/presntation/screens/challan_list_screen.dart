@@ -138,7 +138,7 @@ class _ChallanListScreenState extends ConsumerState<ChallanListScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  width: 380,
+                  width: double.infinity,
                   padding: EdgeInsets.all(5),
                   decoration: BoxDecoration(
                     color: Colors.white,

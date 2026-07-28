@@ -195,7 +195,7 @@ class _NewChallanScreenState extends ConsumerState<NewChallanScreen> {
                   ),
                 ),
               ),
-             
+
               SizedBox(height: 10),
               Container(
                 padding: EdgeInsets.all(20),
@@ -240,6 +240,7 @@ class _NewChallanScreenState extends ConsumerState<NewChallanScreen> {
                       'Garment Type',
                       style: TextStyle(color: Colors.grey, fontSize: 18),
                     ),
+                    const SizedBox(height: 10),
                     Wrap(
                       spacing: 10,
                       children: garmentOptions.map((g) {
@@ -433,45 +434,6 @@ class _NewChallanScreenState extends ConsumerState<NewChallanScreen> {
                 ),
               ),
               SizedBox(height: 10),
-
-              Container(
-                padding: EdgeInsets.all(15),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(30),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.1),
-                      blurRadius: 8,
-                      offset: Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Given Date',
-                      style: TextStyle(color: Colors.grey, fontSize: 18),
-                    ),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.calendar_today_outlined,
-                          color: AppColors.primary,
-                        ),
-                        SizedBox(width: 10),
-                        Text(
-                          DateFormat('dd MMM yyyy').format(DateTime.now()),
-                          style: TextStyle(fontSize: 18),
-                        ),
-                        Spacer(),
-                        Text('Auto', style: TextStyle(color: Colors.grey)),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
             ],
           ),
         ),

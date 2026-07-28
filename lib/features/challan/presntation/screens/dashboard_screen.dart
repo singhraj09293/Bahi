@@ -6,7 +6,6 @@ import 'package:challan_app/features/challan/presntation/screens/setting.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 
 class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
@@ -27,10 +26,7 @@ class DashboardScreen extends ConsumerWidget {
     final challan = ref.watch(challanProvider);
     return challan.when(
       data: (challans) {
-        int total = challans.length;
-        int pending = challans.where((c) => c.isReady == 'Pending').length;
-        int completed = challans.where((c) => c.isDelivered == true).length;
-        int totalPiece = challans.fold(0, (sum, c) => sum + c.totalPiece);
+       
         final recent = challans.take(3).toList();
         Map<String, int> masterCounts = {};
         for (var c in challans) {
@@ -49,7 +45,7 @@ class DashboardScreen extends ConsumerWidget {
                 Padding(
                   padding: const EdgeInsets.only(left: 10.0),
                   child: Text(
-                    'Bahi',
+                    'BAHI',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
                   ),
                 ),
@@ -107,7 +103,7 @@ class DashboardScreen extends ConsumerWidget {
                       crossAxisCount: 2,
                       mainAxisSpacing: 10,
                       crossAxisSpacing: 10,
-                      childAspectRatio: 1.3,
+                      childAspectRatio: 2.2,
                     ),
                     itemCount: masterCounts.length,
                     itemBuilder: (context, index) {
@@ -126,32 +122,37 @@ class DashboardScreen extends ConsumerWidget {
                         Colors.purple.shade800,
                       ];
                       return Container(
+                        
                         decoration: BoxDecoration(
                           color: avatarColors[index % avatarColors.length],
                           borderRadius: BorderRadius.circular(20),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black,
+                              color: Colors.black12,
                               offset: Offset(0, 4),
                             ),
                           ],
                         ),
                         child: Center(
+                          
                           child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
                                 name,
                                 style: TextStyle(
                                   color: textColors[index % textColors.length],
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 16,
+                                  fontSize: 18,
                                 ),
                               ),
+                              const SizedBox(height: 4,),
                               Text(
-                                '${count} Lotts',
+                                '$count Lotts',
                                 style: TextStyle(
                                   color: textColors[index % textColors.length],
-                                  fontSize: 10,
+                                  fontSize: 15,
                                 ),
                               ),
                             ],
@@ -160,7 +161,7 @@ class DashboardScreen extends ConsumerWidget {
                       );
                     },
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
