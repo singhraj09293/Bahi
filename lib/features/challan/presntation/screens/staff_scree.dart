@@ -1,4 +1,5 @@
 import 'package:challan_app/core/theme/app_theme.dart';
+import 'package:challan_app/features/challan/presntation/screens/otherStaff.dart';
 
 import 'package:challan_app/features/workers/presentation/screens/worker_screen.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +13,9 @@ class StaffScree extends StatefulWidget {
 
 class _StaffScreeState extends State<StaffScree> {
   bool showWorkers = true;
+  addOtherStaff()async{
+    
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,7 +59,7 @@ class _StaffScreeState extends State<StaffScree> {
                         border: Border.all(color: Colors.black26),
                       ),
                       child: Text(
-                        'Masters',
+                        'Other Staff',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: !showWorkers ? Colors.white : Colors.black,
@@ -68,7 +72,9 @@ class _StaffScreeState extends State<StaffScree> {
               ],
             ),
           ),
-          Expanded(child: WorkerScreen()),
+          Expanded(
+            child: showWorkers ? const WorkerScreen() : const Otherstaff(staffList: [],),
+          ),
         ],
       ),
     );

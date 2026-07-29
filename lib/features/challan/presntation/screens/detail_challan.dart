@@ -124,6 +124,7 @@ class _DetailChallanState extends ConsumerState<DetailChallan> {
                               ),
                             ],
                           ),
+
                           SizedBox(height: 5),
                           Divider(color: Colors.grey),
                           SizedBox(height: 5),
@@ -136,6 +137,30 @@ class _DetailChallanState extends ConsumerState<DetailChallan> {
                               Spacer(),
                               Text(
                                 '${challan.totalPiece.toString()}pcs',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          SizedBox(height: 5),
+                          Divider(color: Colors.grey),
+                          SizedBox(height: 5),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.checkroom_outlined,
+                                color: Colors.grey,
+                              ),
+                              Text(
+                                'Garment',
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                              Spacer(),
+                              Text(
+                                challan.garmentTypes.join(', '),
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold,
@@ -257,34 +282,6 @@ class _DetailChallanState extends ConsumerState<DetailChallan> {
                               ),
                             ],
                           ),
-
-                          SizedBox(height: 5),
-                          Divider(color: Colors.grey),
-                          SizedBox(height: 5),
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.checkroom_outlined,
-                                color: Colors.grey,
-                              ),
-                              Text(
-                                'Garment',
-                                style: TextStyle(color: Colors.grey),
-                              ),
-                              Spacer(),
-                              Text(
-                                challan.garmentTypes.join(', '),
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-
-                          SizedBox(height: 5),
-                          Divider(color: Colors.grey),
-                          SizedBox(height: 5),
                         ],
                       ),
                     ),

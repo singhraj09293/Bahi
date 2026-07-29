@@ -2,6 +2,7 @@ import 'package:challan_app/core/theme/app_theme.dart';
 import 'package:challan_app/features/challan/presntation/provider/challan_provider.dart';
 import 'package:challan_app/features/challan/presntation/screens/detail_challan.dart';
 import 'package:challan_app/features/challan/presntation/screens/new_challan_screen.dart';
+import 'package:challan_app/features/challan/presntation/screens/seth_challan.dart';
 import 'package:challan_app/features/challan/presntation/screens/setting.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +27,6 @@ class DashboardScreen extends ConsumerWidget {
     final challan = ref.watch(challanProvider);
     return challan.when(
       data: (challans) {
-       
         final recent = challans.take(3).toList();
         Map<String, int> masterCounts = {};
         for (var c in challans) {
@@ -121,41 +121,47 @@ class DashboardScreen extends ConsumerWidget {
                         Colors.blue.shade800,
                         Colors.purple.shade800,
                       ];
-                      return Container(
-                        
-                        decoration: BoxDecoration(
-                          color: avatarColors[index % avatarColors.length],
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black12,
-                              offset: Offset(0, 4),
-                            ),
-                          ],
+                      return GestureDetector(
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => SethChallan(sethName: name,)),
                         ),
-                        child: Center(
-                          
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                name,
-                                style: TextStyle(
-                                  color: textColors[index % textColors.length],
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18,
-                                ),
-                              ),
-                              const SizedBox(height: 4,),
-                              Text(
-                                '$count Lotts',
-                                style: TextStyle(
-                                  color: textColors[index % textColors.length],
-                                  fontSize: 15,
-                                ),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: avatarColors[index % avatarColors.length],
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black12,
+                                offset: Offset(0, 4),
                               ),
                             ],
+                          ),
+                          child: Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  name,
+                                  style: TextStyle(
+                                    color:
+                                        textColors[index % textColors.length],
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  '$count Lotts',
+                                  style: TextStyle(
+                                    color:
+                                        textColors[index % textColors.length],
+                                    fontSize: 15,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       );

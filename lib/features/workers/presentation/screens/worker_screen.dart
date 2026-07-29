@@ -88,50 +88,37 @@ class _WorkerScreenState extends ConsumerState<WorkerScreen> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      SizedBox(
-                                        height: 22,
-                                        child: Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: Text(
-                                            ' ${work[index].workerName}',
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 20,
-                                              height: 1.0,
-                                            ),
-                                          ),
+                                      Text(
+                                        ' ${work[index].workerName}',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20,
+                                          height: 1.0,
                                         ),
                                       ),
-                                      SizedBox(
-                                        height: 20,
-                                        child: Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              Spacer(),
-                                              IconButton(
-                                                padding: EdgeInsets.zero,
-                                                constraints: BoxConstraints(),
-                                                onPressed: () async {
-                                                  await ref
-                                                      .read(
-                                                        workerRepositoryProvider,
-                                                      )
-                                                      .deleteWorker(
-                                                        work[index].workerId,
-                                                      );
-                                                },
-                                                icon: Icon(
-                                                  Icons.delete_outline,
-                                                  color: AppColors.primary,
-                                                ),
-                                              ),
-                                            ],
+                                      Row(
+                                        
+                                        children: [
+                                          Spacer(),
+                                          IconButton(
+                                            padding: EdgeInsets.zero,
+                                            constraints: BoxConstraints(),
+                                            onPressed: () async {
+                                              await ref
+                                                  .read(
+                                                    workerRepositoryProvider,
+                                                  )
+                                                  .deleteWorker(
+                                                    work[index].workerId,
+                                                  );
+                                            },
+                                            icon: Icon(
+                                              Icons.delete_outline,
+                                              color: AppColors.primary,
+                                            ),
                                           ),
-                                        ),
+                                        ],
                                       ),
                                     ],
                                   ),
