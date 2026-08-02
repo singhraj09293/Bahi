@@ -114,7 +114,7 @@ class _DetailChallanState extends ConsumerState<DetailChallan> {
                             children: [
                               Icon(Icons.person, color: Colors.grey),
                               Text(
-                                'Master Name',
+                                'Party Name',
                                 style: TextStyle(color: Colors.grey),
                               ),
                               Spacer(),

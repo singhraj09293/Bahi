@@ -3,6 +3,8 @@ import 'package:challan_app/features/challan/data/models/challan_item.dart';
 import 'package:challan_app/features/challan/data/models/challan_model.dart';
 import 'package:challan_app/features/challan/presntation/provider/challan_provider.dart';
 import 'package:challan_app/features/workers/presentation/provider/worker_provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -109,6 +111,7 @@ class _NewChallanScreenState extends ConsumerState<NewChallanScreen> {
                 sethName: selectedMasterName.text.trim(),
                 design: design.text.trim(),
                 designer: designer.text.trim(),
+                userId: FirebaseAuth.instance.currentUser!.uid,
               );
               ref.read(challanRepositiaryProvider).addChallan(challan);
               Navigator.pop(context);

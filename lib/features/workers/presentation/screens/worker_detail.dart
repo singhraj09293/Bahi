@@ -15,6 +15,21 @@ class WorkerDetail extends ConsumerStatefulWidget {
 }
 
 class _WorkerDetailState extends ConsumerState<WorkerDetail> {
+  void toggleComplete(WidgetRef ref, AssignedWorkItem item) {
+    final updatedAssignments = item.challan.assignments.map((a) {
+      if (a.workerId == item.assignment.workerId &&
+          a.quantity == item.assignment.quantity &&
+          a.ratePerPiece == item.assignment.ratePerPiece) {
+        return a.copyWith(isComplete: !a.isComplete);
+      }
+      return a;
+    }).toList();
+
+    ref
+        .read(challanRepositiaryProvider)
+        .updateChallan(item.challan.copyWith(assignments: updatedAssignments));
+  }
+
   Color getBadgeColor(ChallanModel challan) {
     if (challan.isDelivered) return Colors.blue.shade50;
     if (challan.isReady == 'Ready') return Colors.green.shade50;
@@ -39,6 +54,7 @@ class _WorkerDetailState extends ConsumerState<WorkerDetail> {
       ChallanModel? selectedChallan;
       TextEditingController qtyController = TextEditingController();
       TextEditingController rateController = TextEditingController();
+      TextEditingController varient = TextEditingController();
       showDialog(
         context: context,
         builder: (_) => StatefulBuilder(
@@ -74,6 +90,10 @@ class _WorkerDetailState extends ConsumerState<WorkerDetail> {
                   controller: rateController,
                   decoration: InputDecoration(hintText: 'Rate per price (₹)'),
                 ),
+                SizedBox(height: 10),
+                TextField(
+                  decoration: InputDecoration(hintText: 'Color/Varient'),
+                ),
               ],
             ),
             actions: [
@@ -87,6 +107,7 @@ class _WorkerDetailState extends ConsumerState<WorkerDetail> {
                 onPressed: () {
                   if (selectedChallan == null ||
                       qtyController.text.isEmpty ||
+                      varient.text.isEmpty ||
                       rateController.text.isEmpty) {
                     return;
                   }
@@ -103,6 +124,7 @@ class _WorkerDetailState extends ConsumerState<WorkerDetail> {
                       workerName: worker.workerName,
                       quantity: qtr,
                       ratePerPiece: rate,
+                      varient: varient.text.trim(),
                     ),
                   );
                   ref
@@ -132,26 +154,36 @@ class _WorkerDetailState extends ConsumerState<WorkerDetail> {
     return challanAsync.when(
       data: (challan) {
         final workerChallans = challan
-            .where((c) => c.workerid == worker.workerId)
+            .where(
+              (c) => c.assignments.any((a) => a.workerId == worker.workerId),
+            )
             .toList();
 
-        int total = workerChallans.length;
-        int pending = workerChallans
-            .where((c) => c.isReady == 'Pending')
-            .length;
-        int completed = workerChallans.where((c) => c.isDelivered).length;
-        int piece = workerChallans.fold(0, (sum, c) => sum + c.totalPiece);
-        int totalPiecesAssigned = 0;
-        double totalEarned = 0;
         final List<AssignedWorkItem> workerWorkList = [];
         for (var c in challan) {
           for (var a in c.assignments) {
             if (a.workerId == worker.workerId) {
-              totalPiecesAssigned = totalPiecesAssigned + a.quantity;
-              totalEarned = totalEarned + a.amount;
+              workerWorkList.add(AssignedWorkItem(challan: c, assignment: a));
             }
           }
         }
+
+        int total = workerChallans.length;
+        int pending = workerWorkList
+            .where((item) => !item.assignment.isComplete)
+            .length;
+        int completed = workerWorkList
+            .where((item) => item.assignment.isComplete)
+            .length;
+        int piece = workerChallans.fold(0, (sum, c) => sum + c.totalPiece);
+        int totalPiecesAssigned = workerWorkList.fold(
+          0,
+          (sum, item) => sum + item.assignment.quantity,
+        );
+        double totalEarned = workerWorkList.fold(
+          0.0,
+          (sum, item) => sum + item.assignment.amount,
+        );
 
         return Scaffold(
           appBar: AppBar(
@@ -322,64 +354,58 @@ class _WorkerDetailState extends ConsumerState<WorkerDetail> {
                 ),
                 SizedBox(height: 10),
                 Expanded(
-                  child: Builder(
-                    builder: (context) {
-                      for (var c in challan) {
-                        for (var a in c.assignments) {
-                          print(
-                            'Checking: Assignment ID "${a.workerId}" vs Screen Worker ID "${worker.workerId}"',
-                          );
-                          if (a.workerId == worker.workerId) {
-                            totalEarned = totalEarned + a.amount;
-                            workerWorkList.add(
-                              AssignedWorkItem(
-                                challanNo: c.challanNo.toString(),
-                                assignment: a,
-                              ),
-                            );
-                          }
-                        }
-                      }
+                  child: workerWorkList.isEmpty
+                      ? Center(child: Text('No work assign yet.'))
+                      : ListView.builder(
+                          itemCount: workerWorkList.length,
+                          itemBuilder: (context, index) {
+                            final item = workerWorkList[index];
 
-                      if (workerWorkList.isEmpty) {
-                        return Center(child: Text('No work assigned yet.'));
-                      }
-                      return ListView.builder(
-                        itemCount: workerWorkList.length,
-                        itemBuilder: (context, index) {
-                          final item = workerWorkList[index];
-
-                          return Container(
-                            margin: const EdgeInsets.only(bottom: 10),
-                            padding: const EdgeInsets.all(15),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(
-                                color: Colors.black12,
-                                width: 1,
-                              ),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Challan ${item.challanNo}',
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
+                            return GestureDetector(
+                              onTap: () => toggleComplete(ref, item),
+                              child: Container(
+                                margin: const EdgeInsets.only(bottom: 10),
+                                padding: const EdgeInsets.all(15),
+                                decoration: BoxDecoration(
+                                  color: item.assignment.isComplete
+                                      ? Colors.grey.shade100
+                                      : Colors.white,
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(
+                                    color: Colors.black12,
+                                    width: 1,
                                   ),
                                 ),
-                                const SizedBox(height: 5),
-                                Text(
-                                  '${item.assignment.quantity} pcs × ₹${item.assignment.ratePerPiece} = ₹${item.assignment.amount}',
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Challan ${item.challan.challanNo}',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        decoration: item.assignment.isComplete
+                                            ? TextDecoration.lineThrough
+                                            : TextDecoration.none,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 5),
+                                    Text(
+                                      '${item.assignment.quantity} pcs × ₹${item.assignment.ratePerPiece} = ₹${item.assignment.amount}',
+                                      style: TextStyle(
+                                        color: item.assignment.isComplete
+                                            ? Colors.grey
+                                            : Colors.black,
+                                        decoration: item.assignment.isComplete
+                                            ? TextDecoration.lineThrough
+                                            : TextDecoration.none,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                          );
-                        },
-                      );
-                    },
-                  ),
+                              ),
+                            );
+                          },
+                        ),
                 ),
               ],
             ),
@@ -394,8 +420,8 @@ class _WorkerDetailState extends ConsumerState<WorkerDetail> {
 
 // Simple wrapper to hold the matched work cleanly
 class AssignedWorkItem {
-  final String challanNo;
+  final ChallanModel challan;
   final WorkerAssignment assignment;
 
-  AssignedWorkItem({required this.challanNo, required this.assignment});
+  AssignedWorkItem({required this.challan, required this.assignment});
 }

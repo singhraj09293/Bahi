@@ -2,8 +2,10 @@ import 'package:challan_app/core/theme/app_theme.dart';
 import 'package:challan_app/features/workers/data/model/worker_model.dart';
 import 'package:challan_app/features/workers/presentation/provider/worker_provider.dart';
 import 'package:challan_app/features/workers/presentation/screens/worker_detail.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart';
 
 class WorkerScreen extends ConsumerStatefulWidget {
   const WorkerScreen({super.key});
@@ -14,7 +16,7 @@ class WorkerScreen extends ConsumerStatefulWidget {
 
 class _WorkerScreenState extends ConsumerState<WorkerScreen> {
   TextEditingController workerName = TextEditingController();
-  TextEditingController workerType = TextEditingController();
+  
   final List<Color> avatarColors = [
     Colors.orange[100]!,
     Colors.green[100]!,
@@ -28,7 +30,14 @@ class _WorkerScreenState extends ConsumerState<WorkerScreen> {
     Colors.purple.shade800,
   ];
   @override
+  void dispose() {
+   workerName.dispose();
+
+    super.dispose();
+  }
+  @override
   Widget build(BuildContext context) {
+
     final worker = ref.watch(workerProvider);
     return worker.when(
       data: (work) {
@@ -53,8 +62,7 @@ class _WorkerScreenState extends ConsumerState<WorkerScreen> {
                             horizontal: 15,
                           ),
                           child: Container(
-                            padding: EdgeInsets.all(20),
-
+                            padding: EdgeInsets.all(10),
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(20),
@@ -69,7 +77,7 @@ class _WorkerScreenState extends ConsumerState<WorkerScreen> {
                             child: Row(
                               children: [
                                 CircleAvatar(
-                                  radius: 35,
+                                  radius: 30,
                                   backgroundColor:
                                       avatarColors[index % avatarColors.length],
                                   child: Text(
@@ -82,43 +90,34 @@ class _WorkerScreenState extends ConsumerState<WorkerScreen> {
                                     ),
                                   ),
                                 ),
-                                SizedBox(width: 10),
+                                SizedBox(width: 15),
                                 Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                  child: Row(
                                     children: [
-                                      Text(
-                                        ' ${work[index].workerName}',
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 20,
-                                          height: 1.0,
+                                      Expanded(
+                                        child: Text(
+                                          work[index].workerName,
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 20,
+                                          ),
                                         ),
                                       ),
-                                      Row(
-                                        
-                                        children: [
-                                          Spacer(),
-                                          IconButton(
-                                            padding: EdgeInsets.zero,
-                                            constraints: BoxConstraints(),
-                                            onPressed: () async {
-                                              await ref
-                                                  .read(
-                                                    workerRepositoryProvider,
-                                                  )
-                                                  .deleteWorker(
-                                                    work[index].workerId,
-                                                  );
-                                            },
-                                            icon: Icon(
-                                              Icons.delete_outline,
-                                              color: AppColors.primary,
-                                            ),
-                                          ),
-                                        ],
+                                      IconButton(
+                                        padding: EdgeInsets.zero,
+                                        constraints: BoxConstraints(),
+                                        onPressed: () async {
+                                          await ref
+                                              .read(workerRepositoryProvider)
+                                              .deleteWorker(
+                                                work[index].workerId,
+                                              );
+                                        },
+                                        icon: Icon(
+                                          Icons.delete_outline,
+                                          color: AppColors.primary,
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -153,14 +152,7 @@ class _WorkerScreenState extends ConsumerState<WorkerScreen> {
                                 border: InputBorder.none,
                               ),
                             ),
-                            SizedBox(height: 10),
-                            TextField(
-                              controller: workerType,
-                              decoration: InputDecoration(
-                                hintText: 'Worker Role (optional)',
-                                border: InputBorder.none,
-                              ),
-                            ),
+                            
                           ],
                         ),
                         actions: [
@@ -178,6 +170,7 @@ class _WorkerScreenState extends ConsumerState<WorkerScreen> {
                                           .millisecondsSinceEpoch
                                           .toString(),
                                       workerName: workerName.text.trim(),
+                                      userId: FirebaseAuth.instance.currentUser!.uid,
                                     ),
                                   );
                               Navigator.pop(context);

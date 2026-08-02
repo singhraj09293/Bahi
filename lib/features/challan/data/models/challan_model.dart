@@ -21,6 +21,7 @@ class ChallanModel extends Challan {
     required super.design,
     required super.designer,
     required super.assignments,
+    required super.userId,
   });
 
   ChallanModel copyWith({
@@ -39,6 +40,7 @@ class ChallanModel extends Challan {
     String? design,
     String? designer,
     List<WorkerAssignment>? assignments,
+    String? userId,
   }) {
     return ChallanModel(
       challanNo: challanNo ?? this.challanNo,
@@ -56,6 +58,7 @@ class ChallanModel extends Challan {
       design: design ?? this.design,
       designer: designer ?? this.designer,
       assignments: assignments ?? this.assignments,
+      userId: userId ?? this.userId,
     );
   }
 
@@ -75,7 +78,8 @@ class ChallanModel extends Challan {
       'sethName': sethName,
       'design': design,
       'designer': designer,
-      'assignments': assignments.map((a)=>a.toMap()).toList(),
+      'assignments': assignments.map((a) => a.toMap()).toList(),
+      'userId': userId,
     };
   }
 
@@ -103,6 +107,7 @@ class ChallanModel extends Challan {
       assignments: (map['assignments'] as List<dynamic>? ?? [])
           .map((e) => WorkerAssignment.fromMap(e))
           .toList(),
+      userId: map['userId'] as String? ?? '',
     );
   }
 

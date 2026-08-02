@@ -4,6 +4,7 @@ import 'package:challan_app/features/challan/presntation/screens/otherStaff.dart
 import 'package:challan_app/features/workers/data/model/other_staff_model.dart';
 
 import 'package:challan_app/features/workers/presentation/screens/worker_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class StaffScree extends StatefulWidget {
@@ -62,6 +63,7 @@ class _StaffScreeState extends State<StaffScree> {
                     role: roleController.text.trim(),
                     salary:
                         double.tryParse(salaryController.text.trim()) ?? 0.0,
+                    userId: FirebaseAuth.instance.currentUser!.uid,
                   );
                   await repository.addStaff(staff);
                   if (mounted) Navigator.pop(ctx);

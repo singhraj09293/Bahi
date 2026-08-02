@@ -1,5 +1,6 @@
 import 'package:challan_app/features/workers/data/model/other_staff_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class StaffRepository {
   final _firestore = FirebaseFirestore.instance;
@@ -11,11 +12,16 @@ class StaffRepository {
   }
 
   Stream<List<OtherStaffModel>> getStaff() {
-    return _firestore.collection(_collection).snapshots().map((snapshot) {
-      return snapshot.docs
-          .map((doc) => OtherStaffModel.fromMap(doc.data(), doc.id))
-          .toList();
-    });
+    final uid = FirebaseAuth.instance.currentUser!.uid;
+    return _firestore
+        .collection(_collection)
+        .where('userId', isEqualTo: uid)
+        .snapshots()
+        .map((snapshot) {
+          return snapshot.docs
+              .map((doc) => OtherStaffModel.fromMap(doc.data(), doc.id))
+              .toList();
+        });
   }
 
   Future<void> updateStaff(OtherStaffModel staff) async {

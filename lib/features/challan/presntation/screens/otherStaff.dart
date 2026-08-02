@@ -4,15 +4,21 @@ import 'package:challan_app/features/workers/data/model/other_staff_model.dart';
 import 'package:flutter/material.dart';
 // Import your StaffRepository here
 
-class Otherstaff extends StatelessWidget {
+class Otherstaff extends StatefulWidget {
   const Otherstaff({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final staffRepository = StaffRepository();
+  State<Otherstaff> createState() => _OtherstaffState();
+}
 
+class _OtherstaffState extends State<Otherstaff> {
+  final _staffRepository = StaffRepository();
+  late final Stream<List<OtherStaffModel>> staffStream = _staffRepository
+      .getStaff();
+  @override
+  Widget build(BuildContext context) {
     return StreamBuilder<List<OtherStaffModel>>(
-      stream: staffRepository.getStaff(),
+      stream: staffStream,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
@@ -129,7 +135,7 @@ class Otherstaff extends StatelessWidget {
                             );
                           },
                           onDismissed: (direction) {
-                            staffRepository.deleteStaff(staff.id);
+                            _staffRepository.deleteStaff(staff.id);
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(content: Text('${staff.name} removed')),
                             );

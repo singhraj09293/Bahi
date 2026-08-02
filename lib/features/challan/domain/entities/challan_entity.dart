@@ -1,4 +1,3 @@
-import 'package:challan_app/features/challan/data/models/challan_item.dart';
 import 'package:challan_app/features/challan/data/models/workers_assignment.dart';
 
 class Challan {
@@ -17,6 +16,7 @@ class Challan {
   final String design;
   final String designer;
   final List<WorkerAssignment> assignments;
+  final String userId;
 
   const Challan({
     required this.challanNo,
@@ -33,6 +33,6 @@ class Challan {
     required this.sethName,
     required this.design,
     required this.designer,
-     required this.assignments,
+    required this.assignments, required this.userId,
   });
 }

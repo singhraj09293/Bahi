@@ -1,5 +1,6 @@
 import 'package:challan_app/features/challan/data/models/challan_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ChallanRepository {
   final _fireStore = FirebaseFirestore.instance;
@@ -13,11 +14,16 @@ class ChallanRepository {
   }
 
   Stream<List<ChallanModel>> getChallan() {
-    return _fireStore.collection(_collection).snapshots().map((snapshot) {
-      return snapshot.docs
-          .map((doc) => ChallanModel.fromMap(doc.data()))
-          .toList();
-    });
+    final uid = FirebaseAuth.instance.currentUser!.uid;
+    return _fireStore
+        .collection(_collection)
+        .where('userId', isEqualTo: uid)
+        .snapshots()
+        .map((snapshot) {
+          return snapshot.docs
+              .map((doc) => ChallanModel.fromMap(doc.data()))
+              .toList();
+        });
   }
 
   Future<void> updateChallan(ChallanModel challan) async {

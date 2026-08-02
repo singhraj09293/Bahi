@@ -53,7 +53,7 @@ class DashboardScreen extends ConsumerWidget {
             ),
             actions: [
               Padding(
-                padding: const EdgeInsets.only(right: 8.0),
+                padding: const EdgeInsets.only(right: 15.0),
                 child: GestureDetector(
                   onTap: () {
                     Navigator.push(

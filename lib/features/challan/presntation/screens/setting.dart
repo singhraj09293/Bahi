@@ -757,6 +757,7 @@ class _SettingState extends State<Setting> {
                     ),
                   ),
                   onPressed: () {
+                    Navigator.pop(context);
                     logout();
                   },
                   child: Row(
