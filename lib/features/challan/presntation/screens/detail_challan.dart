@@ -50,10 +50,29 @@ class _DetailChallanState extends ConsumerState<DetailChallan> {
             actions: [
               IconButton(
                 onPressed: () {
-                  ref
-                      .read(challanRepositiaryProvider)
-                      .deleteChallan(widget.challan.challanNo);
-                  Navigator.pop(context);
+                  showDialog(
+                    context: context,
+                    builder: (_) => AlertDialog(
+                      title: Text('Delete Challan?'),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text('Cancel'),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            ref
+                                .read(challanRepositiaryProvider)
+                                .deleteChallan(widget.challan.challanNo);
+                            Navigator.pop(context);
+                          },
+                          child: Text('Delete'),
+                        ),
+                      ],
+                    ),
+                  );
                 },
                 icon: Icon(Icons.delete),
               ),
@@ -334,6 +353,7 @@ class _DetailChallanState extends ConsumerState<DetailChallan> {
                                 Icons.local_shipping_outlined,
                                 color: Colors.grey,
                               ),
+                              SizedBox(width: 5),
                               Text(
                                 'Delivery',
                                 style: TextStyle(color: Colors.grey),

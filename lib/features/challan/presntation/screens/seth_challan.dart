@@ -45,103 +45,101 @@ class _SethChallanState extends ConsumerState<SethChallan> {
           appBar: AppBar(title: Text(widget.sethName)),
           body: Padding(
             padding: const EdgeInsets.all(15.0),
-            child: Expanded(
-              child: ListView.builder(
-                itemCount: seth.length,
-                itemBuilder: (context, index) {
-                  final c = seth[index];
-                  return GestureDetector(
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => DetailChallan(challan: challan[index]),
-                      ),
+            child: ListView.builder(
+              itemCount: seth.length,
+              itemBuilder: (context, index) {
+                final c = seth[index];
+                return GestureDetector(
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => DetailChallan(challan: challan[index]),
                     ),
-                    child: Container(
-                      margin: EdgeInsets.only(bottom: 5),
-                      padding: EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black12,
-                            offset: Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                c.challanNo,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 23,
-                                ),
-                              ),
-                              SizedBox(height: 10),
-                              Container(
-                                padding: EdgeInsets.symmetric(
-                                  vertical: 10,
-                                  horizontal: 15,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: getBadgeColor(c),
-                                  borderRadius: BorderRadius.circular(30),
-                                ),
-                                child: Text(
-                                  getBadgeText(c),
-                                  style: TextStyle(
-                                    color: getBadgeTextColor(c),
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          Text(
-                            '${c.workersNames} ·${c.totalPiece}pcs',
-                            style: TextStyle(color: Colors.grey, fontSize: 15),
-                          ),
-                          Text(
-                            c.classification,
-                            style: TextStyle(color: Colors.grey, fontSize: 15),
-                          ),
-
-                          Divider(color: AppColors.primary),
-                          SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'Given ${DateFormat('dd MMM yyyy').format(c.date)}',
-                                style: TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 15,
-                                ),
-                              ),
-                              Text(
-                                c.isDelivered
-                                    ? 'Delivered: ${DateFormat('dd MMM yyyy').format(c.deliveryDate!)}'
-                                    : 'No delivery yet',
-                                style: TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 15,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
+                  ),
+                  child: Container(
+                    margin: EdgeInsets.only(bottom: 10),
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black12,
+                          offset: Offset(0, 4),
+                        ),
+                      ],
                     ),
-                  );
-                },
-              ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              c.challanNo,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 23,
+                              ),
+                            ),
+                            SizedBox(height: 10),
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                vertical: 10,
+                                horizontal: 15,
+                              ),
+                              decoration: BoxDecoration(
+                                color: getBadgeColor(c),
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              child: Text(
+                                getBadgeText(c),
+                                style: TextStyle(
+                                  color: getBadgeTextColor(c),
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Text(
+                          '${c.workersNames} ·${c.totalPiece}pcs',
+                          style: TextStyle(color: Colors.grey, fontSize: 15),
+                        ),
+                        Text(
+                          c.classification,
+                          style: TextStyle(color: Colors.grey, fontSize: 15),
+                        ),
+            
+                        Divider(color: AppColors.primary),
+                        SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Given ${DateFormat('dd MMM yyyy').format(c.date)}',
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 15,
+                              ),
+                            ),
+                            Text(
+                              c.isDelivered
+                                  ? 'Delivered: ${DateFormat('dd MMM yyyy').format(c.deliveryDate!)}'
+                                  : 'No delivery yet',
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 15,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
             ),
           ),
         );

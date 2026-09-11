@@ -20,13 +20,20 @@ class WorkerRepositories {
         .where('userId', isEqualTo: uid)
         .snapshots()
         .map((snapshot) {
-      return snapshot.docs
-          .map((docs) => WorkerModel.fromMap(docs.data()))
-          .toList();
-    });
+          return snapshot.docs
+              .map((docs) => WorkerModel.fromMap(docs.data()))
+              .toList();
+        });
   }
 
   Future<void> deleteWorker(String workerId) async {
     await _fireStore.collection(_collection).doc(workerId).delete();
+  }
+
+  Future<void> updateWorker(WorkerModel workerModel) async {
+    await _fireStore
+        .collection(_collection)
+        .doc(workerModel.workerId)
+        .set(workerModel.toMap());
   }
 }

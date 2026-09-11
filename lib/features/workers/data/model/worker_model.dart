@@ -1,20 +1,29 @@
+import 'package:challan_app/features/workers/data/model/payment_entry.dart';
+
 class WorkerModel {
   final String workerId;
   final String workerName;
   final String userId;
-
+  final List<PaymentEntry> payments;
 
   WorkerModel({
     required this.workerId,
     required this.workerName,
     required this.userId,
+    this.payments = const [],
   });
 
-  WorkerModel copyWith({String? workerId, String? workerName, String? userId}) {
+  WorkerModel copyWith({
+    String? workerId,
+    String? workerName,
+    String? userId,
+    List<PaymentEntry>? payments,
+  }) {
     return WorkerModel(
       workerId: workerId ?? this.workerId,
       workerName: workerName ?? this.workerName,
       userId: userId ?? this.userId,
+      payments: payments ?? this.payments,
     );
   }
 
@@ -23,6 +32,7 @@ class WorkerModel {
       'workerId': workerId,
       'workerName': workerName,
       'userId': userId,
+      'payments': payments.map((p) => p.toMap()).toList(),
     };
   }
 
@@ -31,10 +41,11 @@ class WorkerModel {
       workerId: map['workerId'] as String,
       workerName: map['workerName'] as String,
       userId: map['userId'] as String,
+      payments: (map['payments'] as List<dynamic>? ?? [])
+          .map((e) => PaymentEntry.fromMap(e as Map<String, dynamic>))
+          .toList(),
     );
   }
-
-
 
   @override
   String toString() =>

@@ -3,7 +3,6 @@ import 'package:challan_app/features/challan/presntation/screens/challan_list_sc
 import 'package:challan_app/features/challan/presntation/screens/dashboard_screen.dart';
 import 'package:challan_app/features/challan/presntation/screens/history_screen.dart';
 import 'package:challan_app/features/challan/presntation/screens/staff_scree.dart';
-import 'package:challan_app/features/workers/presentation/screens/worker_screen.dart';
 import 'package:flutter/material.dart';
 
 class MainScreen extends StatefulWidget {
